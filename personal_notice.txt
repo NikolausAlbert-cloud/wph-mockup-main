@@ -1,0 +1,26 @@
+1. How to use AI in index.css to automate the code production:
+  - make some example of code
+  - copy the relevant section from figma
+  - mark the code that has just been written
+  - press and hold "Str", click "i", click "h", click "i"
+  - click the speaker icon
+  - order AI such "Please add the following data"
+  - paste the copied data from figma into chat box of the AI
+  - click "edit" button
+  - wait while AI process it.
+  - click "accept" if AI correctly intrepreted 
+
+2. How to copy paste image from Figma:
+  - left click the item in Figma
+  - copy as svg
+  - Go to vscode: create file svgr in assets folder
+  - paste the data
+  - change file name from svgr into svg
+
+
+
+Steps finishing this project:
+1. class 19: intial setting (eslint, prettier, shadcn, tailwind)
+2. class 16 maret: UI auth, compound component, react hook from
+3. class 33: front end zod validation
+4. class 34: auth, cookie storage
