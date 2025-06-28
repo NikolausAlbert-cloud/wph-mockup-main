@@ -235,15 +235,26 @@ body {
     margin: 0 auto;
   }
 
+  /* userProfile_page editProfile */
   .clamped-container {
     margin: 0 auto;
     width: clamp(22.56rem, 55.56vw, 50rem);
+  }
+
+  /* Posts */
+  .clamped-container2 {
+    margin: 0 auto;
+    width: clamp(22.56rem, 50.97vw, 45.88rem);
   }
 }
 
 @layer utilities {
   .flex-start {
     @apply flex items-start justify-start;
+  }
+
+  .flex-end {
+    @apply flex items-end justify-end;
   }
 
   .flex-center {

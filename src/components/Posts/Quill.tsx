@@ -3,16 +3,16 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; 
 import { Control, Controller, FieldValues, Path } from 'react-hook-form'; 
 
-interface ImageUploadEditorProps<TFieldValues extends FieldValues> {
+interface QuillProps<TFieldValues extends FieldValues> {
   control: Control<TFieldValues>; // Explicitly type control
   name: Path<TFieldValues>;
   placeholder?: string; // Optional prop
   className?: string; // Optional prop
 }
 
-export const ImageUploadEditor =  <TFieldValues extends FieldValues>({ 
+export const Quill =  <TFieldValues extends FieldValues>({ 
   control, name, placeholder, className 
-}: ImageUploadEditorProps<TFieldValues>) => {
+}: QuillProps<TFieldValues>) => {
   const quillRef =  useRef<ReactQuill | null>(null)
 
   const modules = {

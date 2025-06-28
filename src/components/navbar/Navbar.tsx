@@ -1,10 +1,10 @@
 import { Link, useNavigate } from "react-router-dom"
-import { Button } from "./ui/button"
-import Logo from "../assets/images/logo.svg"
+import { Button } from "../ui/button"
+import Logo from "@/assets/images/logo.svg"
 import { Search, Menu, PencilLine, User, LogOut } from "lucide-react"
 import { useEffect, useState } from "react"
 import UserPhoto from "@/assets/images/logo.svg"
-import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet"
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,12 +28,12 @@ export const Navbar = () => {
 
 // Define different sideOffset values based on screen width
 const getSideOffset = () => {
-  if (width < 640) { // Example: less than 'sm' breakpoint
-    return 5; // Smaller offset for small screens
-  } else if (width >= 640 && width < 1024) { // Example: 'sm' to 'lg'
+  if (width < 640) { 
+    return 5; 
+  } else if (width >= 640 && width < 1024) { 
     return 8;
-  } else { // Example: 'lg' and up
-    return 15; // Larger offset for larger screens
+  } else { 
+    return 15;
   }
 };
 

@@ -4,11 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 
 import { userProfileTab_data } from '@/constants/userProfileTab_data';
-import { UserProfilePost } from '@/components/userProfile.tsx/UserProfilePost';
-import { UserProfilePost_empty } from '@/components/userProfile.tsx/UserProfilePost_empty';
-import { UserProfilePost_changePass } from '@/components/userProfile.tsx/UserProfilePost_changePass';
+import { UserProfilePost } from '@/components/userProfile/UserProfilePost';
+import { UserProfilePost_empty } from '@/components/userProfile/UserProfilePost_empty';
+import { UserProfilePost_changePass } from '@/components/userProfile/UserProfilePost_changePass';
 import { fetchUserData } from '@/redux/slices/getUserDataSlice';
-import { UserProfile_dialog } from '@/components/userProfile.tsx/userProfile_dialog';
+import { UserProfile_dialog } from '@/components/userProfile/userProfile_dialog';
 
 export type DialogFormDataType = {
   name: string;
@@ -53,7 +53,7 @@ export const UserProfile_page = () => {
   if (status === "failed") {
     return <p>Error in fetching user data</p>
   }
-  // console.log("User Data:", userData);
+ 
   return (
     <div className="mt-20 md:mt-32 flex-center flex-col gap-4 md:gap-5">
       <p>{error}</p>

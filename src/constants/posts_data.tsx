@@ -3,7 +3,7 @@ import { Path } from "react-hook-form";
 
 type postsProps = {
   label: string;
-  type: "text" | "quill";
+  type: "text" | "quill" | "file";
   placeholder: string;
   fieldName:  Path<PostsFormInput>;
 };
@@ -23,7 +23,7 @@ export const postsData: postsProps[] = [
   },
   {
     label: "Cover Image",
-    type: "text",
+    type: "file",
     placeholder: "",
     fieldName: "coverimage",
   },
