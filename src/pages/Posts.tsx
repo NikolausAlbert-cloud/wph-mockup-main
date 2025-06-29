@@ -1,7 +1,7 @@
 import { FormInput } from '@/components/FormInput'
 import { postsData } from '@/constants/posts_data'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Path, SubmitHandler, useForm } from 'react-hook-form'
+import { Controller, Path, SubmitHandler, useForm } from 'react-hook-form'
 import { PostsData, PostsFormInput, PostsSchema } from '@/utils/validation'
 import { useState } from 'react'
 import { postPosts } from '@/api/posts'
@@ -88,18 +88,28 @@ export const Posts = () => {
         if (data.type == "quill") {
           return (
             <div key={i} className="mb-4">
-              {/* <FormInput label={data.label} error={errors[fieldName]?.message} >
-                <ImageUploadEditor
+              <FormInput htmlFor={fieldName} label={data.label} error={errors[fieldName]?.message} >
+                <Controller
                   control={control}
                   name={fieldName}
-                  placeholder={data.placeholder}
-                  className={`w-full py-2.5 px-4 border ${errors.content ? "border-red-500" : "border-neutral-300"} rounded-xl text-neutral-950 text-sm font-weight-regular focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  rules={{ required: true }}
+                  render={({ field }) => {
+                    const editorValue = typeof field.value === 'string' ? field.value : '';
+                    return (
+                      <Quill
+                        {...field}
+                        value={editorValue}
+                        placeholder={data.placeholder}
+                        className={`w-full py-2.5 px-4 border ${errors.content ? "border-red-500" : "border-neutral-300"} rounded-xl text-neutral-950 text-sm font-weight-regular focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                      />
+                    )
+                  }}
                 />
               </FormInput>
               {errors[fieldName] && (
                 <p className="text-red-500 text-xs mt-1">{errors[fieldName].message}</p>
-              )} */}
-              <p>Hello</p>
+              )}
+              {/* <p>Hello</p> */}
             </div>
           );
         } else if (data.type == "file") {
