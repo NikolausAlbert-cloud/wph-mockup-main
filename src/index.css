@@ -268,6 +268,14 @@ body {
   .flex-between {
     @apply flex items-center justify-between;
   }
+
+  .quill-rounded-editor .ql-toolbar {
+    @apply  rounded-t-md;
+  }
+
+  .quill-rounded-editor .ql-container {
+    @apply rounded-b-md min-h-31 md:min-h-46;
+  }
 }
 
 img {

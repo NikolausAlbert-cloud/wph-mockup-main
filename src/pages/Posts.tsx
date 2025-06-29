@@ -100,7 +100,7 @@ export const Posts = () => {
                         {...field}
                         value={editorValue}
                         placeholder={data.placeholder}
-                        className={`w-full py-2.5 px-4 border ${errors.content ? "border-red-500" : "border-neutral-300"} rounded-xl text-neutral-950 text-sm font-weight-regular focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                        className={`w-full ${errors.content ? "border-red-500" : "border-neutral-300"} text-neutral-950 text-sm font-weight-regular focus:outline-none focus:ring-2 focus:ring-blue-500`}
                       />
                     )
                   }}
@@ -109,7 +109,6 @@ export const Posts = () => {
               {errors[fieldName] && (
                 <p className="text-red-500 text-xs mt-1">{errors[fieldName].message}</p>
               )}
-              {/* <p>Hello</p> */}
             </div>
           );
         } else if (data.type == "file") {
