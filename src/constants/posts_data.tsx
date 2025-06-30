@@ -25,7 +25,7 @@ export const postsData: postsProps[] = [
     label: "Cover Image",
     type: "file",
     placeholder: "",
-    fieldName: "coverimage",
+    fieldName: "coverImage",
   },
   {
     label: "Tags",

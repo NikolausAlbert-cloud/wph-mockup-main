@@ -13,9 +13,10 @@ type QuillProps = {
   ) => void;
   placeholder: string;
   className: string;
+  id: string;
 }
 
-export const Quill: React.FC<QuillProps> = React.forwardRef(({ value, onChange, placeholder, className }, ref) => {
+export const Quill: React.FC<QuillProps> = React.forwardRef(({ value, onChange, placeholder, className, id }, ref) => {
   const quillRef = useRef<ReactQuill>(null); // Create an internal ref for ReactQuill
 
   // Expose the internal quillRef to the parent component via the forwarded ref
@@ -45,10 +46,13 @@ export const Quill: React.FC<QuillProps> = React.forwardRef(({ value, onChange, 
   };
 
   const formats = [
+    "font",
     'header',
     'bold', 'strike','italic',
+    "script",
     'list', 'bullet', 'indent',
-    'link', 'image',
+    'link', 'image', "formula",
+    'blockquote', 'code-block',
     'align'
   ];
 
@@ -62,6 +66,7 @@ export const Quill: React.FC<QuillProps> = React.forwardRef(({ value, onChange, 
       formats={formats}
       placeholder={placeholder}
       className={`${className || ''} quill-rounded-editor`} 
+      id={id}
     />
   );
 });

@@ -1,8 +1,13 @@
-import { useRef, useState, useEffect } from 'react';
-import { useController } from 'react-hook-form';
+import React, { useRef, useState, useEffect } from 'react';
+import { Control, useController } from 'react-hook-form';
 import { CloudUpload, XCircle } from 'lucide-react';
 
-export const ImageUploader = ({ name, control }) => {
+type ImageUploaderProps = {
+  name: string;
+  control: Control<any>;
+};
+
+export const ImageUploader: React.FC<ImageUploaderProps> = ({ name, control }) => {
   const {
     field: { value, onChange, onBlur, ref },
     fieldState: { error, invalid },
@@ -13,22 +18,24 @@ export const ImageUploader = ({ name, control }) => {
 
   const fileInputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [previewImage, setPreviewImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   useEffect(() => {
     if (value instanceof File) {
       const imageUrl = URL.createObjectURL(value);
       setPreviewImage(imageUrl);
       return () => URL.revokeObjectURL(imageUrl);
+    } else if (typeof value === "string" && value) {
+      setPreviewImage(value);
     } else {
       setPreviewImage(null);
     }
   }, [value]);
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      onChange(file);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      onChange(files[0]);
     } else {
       onChange(null);
     }
@@ -70,10 +77,10 @@ export const ImageUploader = ({ name, control }) => {
   };
 
   return (
-    <div className="cover-image-container">
-      <label className="block text-gray-700 text-sm font-bold mb-2">Cover Image</label>
+    <div className="cover-image-container block text-gray-700 text-sm font-bold mb-2">
+      
       <div
-        className={`image-upload-area ${isDragging ? 'dragging' : ''} ${invalid ? 'error-border' : ''}  border-neutral-400 border-dashed  border-[1px] rounded-xl bg-neutral-50`}
+        className={`image-upload-area ${isDragging ? 'dragging' : ''} ${invalid ? 'error-border border-red-500' : ''}  border-neutral-400 border-dashed  border-[1px] rounded-xl bg-neutral-50`}
         onClick={handleClick}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -114,7 +121,6 @@ export const ImageUploader = ({ name, control }) => {
           style={{ display: 'none' }}
         />
       </div>
-      {error && <p className="error-message">{error.message}</p>}
     </div>
   );
 };

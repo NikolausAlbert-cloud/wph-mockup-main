@@ -64,14 +64,17 @@ export const UserProfileDialogSchema = z.object({
 export const PostsSchema = z.object({
   title: z.string().min(1, { message: "Error Text Helper"}),
   content: z.string().min(1, { message: "Error Text Helper"}),
-  coverimage: z
-    .union([
-      z.string().url("Invalid URL format").min(1, "Cover image URL is required"), 
-      z.instanceof(FileList).refine(fileList => fileList.length > 0, { message: "Please select a cover image file" }),
-      z.null(),
-      z.undefined(),
-    ])
-    .optional(),
+  coverImage: z.union([
+    z.instanceof(File), 
+    z.string().url("Invalid image URL").optional(), 
+    z.null(), 
+    z.undefined() 
+  ])
+  .refine(val => {
+    return (val instanceof File) || (typeof val === 'string' && val.length > 0);
+  }, {
+    message: "Cover image is required"
+  }),
   tags: z.string().min(1, { message: "Error Text Helper" }).optional(),
 })
 
@@ -91,6 +94,6 @@ export type PostsFormInput = z.infer<typeof PostsSchema>;
 export interface PostsData {
   title: string;
   content: string;
-  coverimage: string;
+  coverImage: File;
   tags: string[];
 };
