@@ -11,8 +11,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { UserProfileDialog_data } from '@/constants/userProfileDialog_data';
-import { DialogFormDataType } from "@/pages/UserProfile_page";
-import { UserProfileDialogData, UserProfileDialogSchema } from "@/utils/validation";
+import { DialogFormDataType, UserProfileDialogData, UserProfileDialogSchema } from "@/utils/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -31,9 +30,9 @@ export const UserProfile_dialog = ({
   dialogFormData,
   onProfileUpdated, 
 }: UserProfileDialogProps ) => {
-  // console.log("Dialog Form Data:", dialogFormData);
-  const [ loading, setLoading ] = useState(false);
-  const [ error, setError ] = useState(null);
+  
+  const [ loading, setLoading ] = useState<boolean>(false);
+  const [ error, setError ] = useState<string | null>(null);
   const [ avatarPreview, setAvatarPreview ] = useState(dialogFormData.avatar || null);
 
   const { 
@@ -95,7 +94,7 @@ export const UserProfile_dialog = ({
       const response = await changeProfile({
         payload: formData
       });
-      // console.log("Response from changeProfile:", response);
+      
       if (response.avatarUrl) { 
         setAvatarPreview(response.avatarUrl);
       }
@@ -110,8 +109,7 @@ export const UserProfile_dialog = ({
       setLoading(false);
     }
   };
-
-  // console.log(avatarPreview, "Avatar Preview");
+  
   return (
     <div>
       <Dialog open={isOpenDialog} onOpenChange={setIsOpenDialog}>

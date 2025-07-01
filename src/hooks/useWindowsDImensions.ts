@@ -1,4 +1,3 @@
-// hooks/useWindowDimensions.ts (or .js)
 import { useState, useEffect } from 'react';
 
 interface WindowDimensions {
@@ -24,7 +23,7 @@ export default function useWindowDimensions(): WindowDimensions {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []); // Empty dependency array means this effect runs once on mount and cleans up on unmount
+  }, []);
 
   return windowDimensions;
 }

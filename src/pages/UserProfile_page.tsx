@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import UserPhoto from "@/assets/images/logo.svg";
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 
@@ -9,12 +8,8 @@ import { UserProfilePost_empty } from '@/components/userProfile/UserProfilePost_
 import { UserProfilePost_changePass } from '@/components/userProfile/UserProfilePost_changePass';
 import { fetchUserData } from '@/redux/slices/getUserDataSlice';
 import { UserProfile_dialog } from '@/components/userProfile/userProfile_dialog';
-
-export type DialogFormDataType = {
-  name: string;
-  headline: string;
-  avatar?: string | File | null;
-};
+import { UserBoxInfo } from '@/components/UserBoxInfo';
+import { DialogFormDataType } from '@/utils/validation';
 
 export const UserProfile_page = () => {
   const [ isOpenDialog, setIsOpenDialog ] = useState(false);
@@ -58,19 +53,7 @@ export const UserProfile_page = () => {
     <div className="mt-20 md:mt-32 flex-center flex-col gap-4 md:gap-5">
       <p>{error}</p>
       <div className="clamped-container h-19 md:h-28 px-4 md:px-6 py-3.5 md:py-4 flex-between border border-neutral-300 rounded-2xl">
-        <div className="flex-between gap-3">
-          <div>
-            {userData.avatarUrl ? (
-              <img src={userData.avatarUrl} alt="User Avatar" className="size-20 rounded-full object-cover" />
-            ) : (
-              <UserPhoto className="size:12.5 md:size-20"/>
-            )} 
-          </div>
-          <div>
-            <p className="text-sm md:text-lg font-bold text-neutral-900">{ dialogFormData.name }</p>
-            <p className="text-sm md:text-md font-regular text-neutral-900">{ dialogFormData.headline }</p>
-          </div>
-        </div>
+        <UserBoxInfo dialogFormData={dialogFormData} />
         <UserProfile_dialog 
           isOpenDialog={isOpenDialog}
           setIsOpenDialog={setIsOpenDialog}

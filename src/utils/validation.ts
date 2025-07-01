@@ -82,6 +82,19 @@ export type SignInFormResponse = {
   token: string;
 }
 
+export interface PostsData {
+  title: string;
+  content: string;
+  coverImage: File;
+  tags: string[];
+};
+
+export type DialogFormDataType = {
+  name: string;
+  headline: string;
+  avatar?: string | File | null;
+};
+
 export type User = z.infer<typeof UserSchema>;
 export type SignUpFormData = z.infer<typeof SignUpSchema>;
 export type SignUpFormResponse = Omit<User, "name" | "password" | "confirmpassword">;
@@ -91,9 +104,3 @@ export type GetUserDataType = Omit<User, "confirmpassword">;
 export type ChangePasswordData = z.infer<typeof ChangePasswordSchema>;
 export type UserProfileDialogData = z.infer<typeof UserProfileDialogSchema>;
 export type PostsFormInput = z.infer<typeof PostsSchema>;
-export interface PostsData {
-  title: string;
-  content: string;
-  coverImage: File;
-  tags: string[];
-};

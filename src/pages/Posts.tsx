@@ -12,7 +12,7 @@ import axios from 'axios'
 export const Posts = () => {
   const [ loading, setLoading ] = useState(false);
   const [ error, setError ] = useState<string | null>(null);
-  const [ info, setInfo ] = useState(null);
+  const [ info, setInfo ] = useState<string | null>(null);
 
   const {
     register,
