@@ -46,7 +46,10 @@ const getUserPostsSlice = createSlice({
       })
       addCase(fetchUserPosts.fulfilled, (state, action: PayloadAction<getUserPostsResponse>) => {
         state.fetchUserPosts_status = "succeeded";
-        state.data = action.payload;
+        state.data.data = action.payload.data;
+        state.data.total = action.payload.total;
+        state.data.page = action.payload.page;
+        state.data.lastPage = action.payload.lastPage;
       })
       addCase(fetchUserPosts.rejected, (state, action) => {
         state.fetchUserPosts_status = "failed";
@@ -55,4 +58,4 @@ const getUserPostsSlice = createSlice({
   } 
 });
 
-export default getUserPostsSlice;
+export default getUserPostsSlice.reducer;
