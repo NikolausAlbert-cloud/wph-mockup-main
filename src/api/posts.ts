@@ -21,7 +21,37 @@ type PostsResponse = {
   comments: number;
 };
 
-export const postPosts = async ({ payload }: PostsParams): Promise<PostsResponse> => {
+type getUserPostsParams = {
+  payload: {
+    limit: number;
+    page: number;
+  }
+};
+
+type getUserPostsParams_dataProps =  {
+  id: number;
+  title: string,
+  content: string;
+  tags: string[];
+  imageUrl: string;
+  createdAt: string;
+  likes: number;
+  comments: number;
+  author: {
+    id: number;
+    name: string;
+    email: string;
+  }
+};
+
+type getUserPostsResponse = {
+  data: getUserPostsParams_dataProps[];
+  total: number;
+  page: number;
+  lastPage: number;
+};
+
+const postPosts = async ({ payload }: PostsParams): Promise<PostsResponse> => {
   const formData = new FormData();
   formData.append("title", payload.title);
   formData.append("content", payload.content);
@@ -40,4 +70,20 @@ export const postPosts = async ({ payload }: PostsParams): Promise<PostsResponse
     },
   });
   return response.data;
+}
+
+const getUserPosts = async ({ payload }: getUserPostsParams): Promise<getUserPostsResponse> => {
+  const response = await customAxios.get(`/posts/my-posts?limit=${payload.limit}&page=${payload.page}`)
+  return response.data;
+}
+
+export type {
+  getUserPostsParams_dataProps,
+  getUserPostsParams,
+  getUserPostsResponse,
+}
+
+export {
+  postPosts,
+  getUserPosts
 }
