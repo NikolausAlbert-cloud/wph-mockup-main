@@ -4,8 +4,10 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 export const fetchUserPosts = createAsyncThunk ("users/fetchUserPosts", async ({ payload }: getUserPostsParams, {rejectWithValue}) => {
   try {
     const response: getUserPostsResponse = await getUserPosts({ payload });
+    console.log("PostSlice: ", response)
     return response;
   } catch (err: any) {
+    console.error("PostSlice: ", err)
     return rejectWithValue(err.response?.data?.message || err.message || "Failed to fetch user posts.")
   };
 });
@@ -39,19 +41,19 @@ const getUserPostsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.
-      addCase(fetchUserPosts.pending, (state) => {
+    builder
+      .addCase(fetchUserPosts.pending, (state) => {
         state.fetchUserPosts_status = "loading";
         state.error = null;
       })
-      addCase(fetchUserPosts.fulfilled, (state, action: PayloadAction<getUserPostsResponse>) => {
+      .addCase(fetchUserPosts.fulfilled, (state, action: PayloadAction<getUserPostsResponse>) => {
         state.fetchUserPosts_status = "succeeded";
         state.data.data = action.payload.data;
         state.data.total = action.payload.total;
         state.data.page = action.payload.page;
         state.data.lastPage = action.payload.lastPage;
       })
-      addCase(fetchUserPosts.rejected, (state, action) => {
+      .addCase(fetchUserPosts.rejected, (state, action) => {
         state.fetchUserPosts_status = "failed";
         state.error = action.payload as string
       })

@@ -11,7 +11,7 @@ export const UserPostBlog = () => {
   const { width } = useWindowDimensions();
   const dispatch: AppDispatch = useDispatch()
   const { fetchUserData_status: status, data, error } = useSelector((state: RootState) => state.user);
-
+  console.log("userPostBlog: ", status, error, data)
   const [ userData, setUserData ] = useState<DialogFormDataType>({
     name: "",
     headline: "",
@@ -45,13 +45,13 @@ export const UserPostBlog = () => {
 
   return (
     <div className="mt-22 md:mt-32">
-      <div className="flex-start border-b border-neutral-300 border-[1px]">
+      <div className="flex-start border-b border-neutral-300 border-[1px] md:h-26 md:pb-6">
         {content}
       </div>
       <div className="flex flex-col">
         <p>Posts</p>
         <div 
-          className={`flex ${width > 640 ? "flex-row" : "flex-col"} md:py-5 md:h-64.5 flex flex-col border-b border-neutral-300 border-[1px]`}
+          className={`flex ${width > 640 ? "flex-row" : "flex-col"} md:py-5 md:h-64.5 border-b border-neutral-300 border-[1px]`}
         >
           <UserPost_short width={width} />
         </div>

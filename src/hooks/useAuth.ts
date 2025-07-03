@@ -1,12 +1,14 @@
 import { loginOauth, logout } from '@/redux/slices/authSlice';
+import { RootState } from '@/redux/store';
 import { auth } from '@/utils/firebaseConfig';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { useState } from 'react'
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const { token } = useSelector((state: RootState) => state.auth);
 
   const loginUser = async (email: string, password: string) => {
     setLoading(true);
@@ -40,5 +42,5 @@ export const useAuth = () => {
     }
   };
   
-  return { loginUser, logoutUser, loading}
+  return { isToken: !!token, loginUser, logoutUser, loading}
 }

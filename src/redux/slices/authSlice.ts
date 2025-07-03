@@ -18,7 +18,6 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginOauth: (_, action: PayloadAction<{ id: string; email: string; token: string}>) => {
-      console.log("Token received in Redux: ", action.payload.token);
       localStorage.setItem("token", action.payload.token);
     },
     logout: () => {
@@ -28,5 +27,5 @@ const authSlice = createSlice({
   }
 });
 
-export const { loginOauth, logout} = authSlice.actions;
+export const { loginOauth, logout } = authSlice.actions;
 export default authSlice.reducer;

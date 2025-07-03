@@ -13,15 +13,15 @@ export const UserBoxInfo = ({ dialogFormData }: UserBoxInfoProps) => {
     ? URL.createObjectURL(dialogFormData.avatar)
     : null;
 
+  console.log("userboxINfo avatarSrc ", typeof(avatarSrc), avatarSrc)
+
   return (
-    <div className='clamped-container flex-between gap-3 p-5 md:p-6 h-3 md:h-20'>
-      <div>
-        { avatarSrc ? (
-          <img src={avatarSrc} alt="User Avatar" className="size-20 rounded-full object-cover" />
-        ) : (
-          <UserPhoto className="size:12.5 md:size-20"/>
-        )} 
-      </div>
+    <div className='flex-between gap-3 p-5 md:p-6 h-3 md:h-20 md:w-56'>
+    { avatarSrc ? (
+      <img src={avatarSrc} alt="User Avatar" className="size-20 rounded-full object-cover" />
+    ) : (
+      <UserPhoto className="size:12.5 md:size-20"/>
+    )} 
       <div>
         <p className="text-sm md:text-lg font-bold text-neutral-900">{ dialogFormData.name }</p>
         <p className="text-sm md:text-md font-regular text-neutral-900">{ dialogFormData.headline }</p>

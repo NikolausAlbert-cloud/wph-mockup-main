@@ -12,6 +12,7 @@ export const UserPost_short = ({width}: UserPost_shortProps) => {
   let image;
   const dispatch: AppDispatch = useDispatch();
   const { fetchUserPosts_status: status, data, error } = useSelector((state: RootState) => state.post);
+  console.log("userPost_short: ", data);
   const [ postData, setPostData ] = useState<getUserPostsResponse>({
     data: [],
     total: 0,
