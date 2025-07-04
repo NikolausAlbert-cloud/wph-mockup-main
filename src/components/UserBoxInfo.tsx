@@ -16,7 +16,7 @@ export const UserBoxInfo = ({ dialogFormData }: UserBoxInfoProps) => {
   console.log("userboxINfo avatarSrc ", typeof(avatarSrc), avatarSrc)
 
   return (
-    <div className='flex-between gap-3 p-5 md:p-6 h-3 md:h-20 md:w-56'>
+    <div className='flex-between gap-3 h-3 md:h-20'>
     { avatarSrc ? (
       <img src={avatarSrc} alt="User Avatar" className="size-20 rounded-full object-cover" />
     ) : (

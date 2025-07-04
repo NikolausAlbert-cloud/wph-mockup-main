@@ -11,6 +11,7 @@ export const UserPostBlog = () => {
   const { width } = useWindowDimensions();
   const dispatch: AppDispatch = useDispatch()
   const { fetchUserData_status: status, data, error } = useSelector((state: RootState) => state.user);
+  const { fetchUserPosts_status, data: post_data, error: post_error } = useSelector((state: RootState) => state.post);
   console.log("userPostBlog: ", status, error, data)
   const [ userData, setUserData ] = useState<DialogFormDataType>({
     name: "",
@@ -44,16 +45,18 @@ export const UserPostBlog = () => {
   }
 
   return (
-    <div className="mt-22 md:mt-32">
-      <div className="flex-start border-b border-neutral-300 border-[1px] md:h-26 md:pb-6">
+    <div className="mt-22 md:mt-32 w-full">
+      <div className="clamped-container flex-start border-b-neutral-300 border-b-[1px] md:h-26 md:pb-6">
         {content}
       </div>
-      <div className="flex flex-col">
-        <p>Posts</p>
+      <div className="clamped-container flex flex-col">
+        <p className="text-xl font-bold pt-6">
+          {post_data.total > 0 ? post_data.total === 1 ? "1 Post" : `${post_data.total} Posts` : "No Posts"}
+        </p>
         <div 
-          className={`flex ${width > 640 ? "flex-row" : "flex-col"} md:py-5 md:h-64.5 border-b border-neutral-300 border-[1px]`}
+          className={`flex flex-col`}
         >
-          <UserPost_short width={width} />
+          <UserPost_short width={width} status={fetchUserPosts_status} data={post_data} error={post_error}/>
         </div>
       </div>
     </div>
