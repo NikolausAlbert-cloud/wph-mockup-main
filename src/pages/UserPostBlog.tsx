@@ -1,18 +1,16 @@
 import { UserBoxInfo } from "@/components/UserBoxInfo"
 import { UserPost_short } from "@/components/UserPost_short"
-import useWindowDimensions from "@/hooks/useWindowsDImensions"
 import { fetchUserData } from "@/redux/slices/getUserDataSlice"
+import { fetchUserPosts } from "@/redux/slices/getUserPostsSlice"
 import { AppDispatch, RootState } from "@/redux/store"
 import { DialogFormDataType } from "@/utils/validation"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 export const UserPostBlog = () => {
-  const { width } = useWindowDimensions();
   const dispatch: AppDispatch = useDispatch()
-  const { fetchUserData_status: status, data, error } = useSelector((state: RootState) => state.user);
+  const { fetchUserData_status, data: user_data, error: user_error } = useSelector((state: RootState) => state.user);
   const { fetchUserPosts_status, data: post_data, error: post_error } = useSelector((state: RootState) => state.post);
-  console.log("userPostBlog: ", status, error, data)
   const [ userData, setUserData ] = useState<DialogFormDataType>({
     name: "",
     headline: "",
@@ -21,25 +19,31 @@ export const UserPostBlog = () => {
 
   useEffect(() => {
     setUserData({
-      name: data.name,
-      headline: data.headline,
-      avatar: data.avatarUrl || null
+      name: user_data.name,
+      headline: user_data.headline,
+      avatar: user_data.avatarUrl || null
     })
-  }, [data])
+  }, [user_data])
 
   useEffect(() => {
-    if (status === "idle") {
+    if (fetchUserPosts_status === "idle") {
+      dispatch(fetchUserPosts({ payload:{ limit: 10, page: 1 } }));
+    }
+  }, [fetchUserPosts_status])
+
+  useEffect(() => {
+    if (fetchUserData_status === "idle") {
       dispatch(fetchUserData())
     }
-  }, [dispatch, status])
+  }, [dispatch, fetchUserData_status])
 
   let content;
-  if (status === "loading") {
+  if (fetchUserData_status === "loading") {
     content = <p>Loading user info...</p>; 
-  } else if (status === "succeeded") {
+  } else if (fetchUserData_status === "succeeded") {
     content = <UserBoxInfo dialogFormData={userData} />;
-  } else if (status === "failed") {
-    content = <p className="text-red-500">Error: {error || "Failed to load user data"}</p>; 
+  } else if (fetchUserData_status === "failed") {
+    content = <p className="text-red-500">Error: {user_error || "Failed to load user data"}</p>; 
   } else {
     content = null; 
   }
@@ -53,10 +57,8 @@ export const UserPostBlog = () => {
         <p className="text-xl font-bold pt-6">
           {post_data.total > 0 ? post_data.total === 1 ? "1 Post" : `${post_data.total} Posts` : "No Posts"}
         </p>
-        <div 
-          className={`flex flex-col`}
-        >
-          <UserPost_short width={width} status={fetchUserPosts_status} data={post_data} error={post_error}/>
+        <div className={`flex flex-col`}>
+          <UserPost_short status={fetchUserPosts_status} data={post_data} error={post_error}/>
         </div>
       </div>
     </div>

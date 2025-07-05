@@ -32,7 +32,6 @@ const AppContent = () => {
 
   const ProtectedRoute = ({ children }: any) => {
     const { isToken, loading } = useAuth();
-    console.log("isToken: ", isToken)
     
     if(loading) {
       return <div>Loading authentication...</div>

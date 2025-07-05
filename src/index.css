@@ -248,6 +248,12 @@ body {
     margin: 0 auto;
     width: clamp(22.56rem, 50.97vw, 45.88rem);
   }
+
+  /* PostRightSide */
+  .clamped-container3 {
+    margin: 0 auto;
+    width: clamp(22.56rem, 30.28vw, 27.25rem);
+  }
 }
 
 @layer utilities {

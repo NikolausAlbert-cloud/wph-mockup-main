@@ -10,12 +10,16 @@ import { fetchUserData } from '@/redux/slices/getUserDataSlice';
 import { UserProfile_dialog } from '@/components/userProfile/userProfile_dialog';
 import { UserBoxInfo } from '@/components/UserBoxInfo';
 import { DialogFormDataType } from '@/utils/validation';
+import { UserPost_short } from '@/components/UserPost_short';
+import { fetchUserPosts } from '@/redux/slices/getUserPostsSlice';
 
 export const UserProfile_page = () => {
   const [ isOpenDialog, setIsOpenDialog ] = useState(false);
   const [ activeTab, setActiveTab ] = useState("tab-0");
   const dispatch: AppDispatch = useDispatch();
-  const { fetchUserData_status: status, data: userData, error } = useSelector((state: RootState) => state.user);
+  const { fetchUserData_status, data: userData, error: user_error } = useSelector((state: RootState) => state.user);
+  const { fetchUserPosts_status, data: post_data, error: post_error } = useSelector((state: RootState) => state.post);
+  console.log("postData, ", post_data.total)
 
   const handleProfileUpdateSuccess = () => {
     dispatch(fetchUserData());
@@ -28,39 +32,47 @@ export const UserProfile_page = () => {
   });
 
   useEffect(() => {
-    setDialogFormData({
-      name: userData.name,
-      headline: userData.headline,
-      avatar: userData.avatarUrl || null,
-    });
+    if (userData) {
+      setDialogFormData({
+        name: userData.name,
+        headline: userData.headline,
+        avatar: userData.avatarUrl || null,
+      });
+    }
   }, [userData]);
   
   useEffect(() => {
-    if (status === "idle") {
+    if (fetchUserData_status === "idle") {
       dispatch(fetchUserData());
     }
-  }, [dispatch, status]);
+  }, [dispatch, fetchUserData_status]);
 
-  if (status === "loading") {
-    return <p>Loading....</p>
-  }
-
-  if (status === "failed") {
-    return <p>Error in fetching user data</p>
-  }
+  useEffect(() => {
+    if (fetchUserPosts_status === "idle") {
+      dispatch(fetchUserPosts({ payload:{ limit: 10, page: 1 } }));
+    }
+  }, [fetchUserPosts_status])
  
   return (
     <div className="mt-20 md:mt-32 flex-center flex-col gap-4 md:gap-5">
-      <p>{error}</p>
-      <div className="clamped-container h-19 md:h-28 px-4 md:px-6 py-3.5 md:py-4 flex-between border border-neutral-300 rounded-2xl">
-        <UserBoxInfo dialogFormData={dialogFormData} />
-        <UserProfile_dialog 
-          isOpenDialog={isOpenDialog}
-          setIsOpenDialog={setIsOpenDialog}
-          dialogFormData= {dialogFormData}
-          onProfileUpdated={handleProfileUpdateSuccess}
-        />
-      </div>
+      { fetchUserData_status === "loading" ? (
+        <p>Loading user data...</p>
+      ) : fetchUserData_status === "failed" ? (
+        <p className="text-red-500">{ user_error }</p>
+      ) : (
+        <div 
+        className="clamped-container h-19 md:h-28 px-4 md:px-6 py-3.5 md:py-4 flex-between border border-neutral-300 rounded-2xl"
+        >
+          <UserBoxInfo dialogFormData={dialogFormData} />
+          <UserProfile_dialog 
+            isOpenDialog={isOpenDialog}
+            setIsOpenDialog={setIsOpenDialog}
+            dialogFormData= {dialogFormData}
+            onProfileUpdated={handleProfileUpdateSuccess}
+          />
+        </div>
+      )}
+      
       {/* Tabs */}
       <div className="flex-start clamped-container">
       {userProfileTab_data.map((item, i) => {
@@ -75,9 +87,28 @@ export const UserProfile_page = () => {
         )
       })}
       </div>
+
+      {/* Tab's content */}
       <div className="clamped-container">
-        {activeTab === "tab-0" ? (
-          <UserProfilePost_empty />
+        { activeTab === "tab-0" ? (
+          fetchUserPosts_status === "loading" ? (
+            <p>Loading user's posts...</p>
+          ) : 
+          fetchUserPosts_status === "failed" ? (
+            <p className="text-red-500">{ post_error }</p>
+          ) : 
+          post_data.total <= 0 ? (
+            <UserProfilePost_empty />
+          ) : (
+            <div className="clamped-container flex flex-col">
+              <p className="text-xl font-bold pt-6">
+                { post_data.total === 1 ? "1 Post" : `${post_data.total} Posts`}
+              </p>
+              <div className={`flex flex-col`}>
+                <UserPost_short status={fetchUserPosts_status} data={post_data} error={post_error}/>
+              </div>
+            </div>
+          ) 
         ) : activeTab === "tab-1" ? (
           <UserProfilePost_changePass />
         ) : (

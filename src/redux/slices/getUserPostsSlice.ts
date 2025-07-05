@@ -4,10 +4,8 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 export const fetchUserPosts = createAsyncThunk ("users/fetchUserPosts", async ({ payload }: getUserPostsParams, {rejectWithValue}) => {
   try {
     const response: getUserPostsResponse = await getUserPosts({ payload });
-    console.log("PostSlice: ", response)
     return response;
   } catch (err: any) {
-    console.error("PostSlice: ", err)
     return rejectWithValue(err.response?.data?.message || err.message || "Failed to fetch user posts.")
   };
 });
