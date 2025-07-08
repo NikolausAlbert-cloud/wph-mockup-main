@@ -58,7 +58,7 @@ export const UserPostBlog = () => {
           {post_data.total > 0 ? post_data.total === 1 ? "1 Post" : `${post_data.total} Posts` : "No Posts"}
         </p>
         <div className={`flex flex-col`}>
-          <UserPost_short status={fetchUserPosts_status} data={post_data} error={post_error}/>
+          <UserPost_short status={fetchUserPosts_status} data={post_data} error={post_error} source="userPost" />
         </div>
       </div>
     </div>

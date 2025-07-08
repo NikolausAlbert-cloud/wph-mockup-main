@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 
 import { userProfileTab_data } from '@/constants/userProfileTab_data';
-import { UserProfilePost } from '@/components/userProfile/UserProfilePost';
 import { UserProfilePost_empty } from '@/components/userProfile/UserProfilePost_empty';
 import { UserProfilePost_changePass } from '@/components/userProfile/UserProfilePost_changePass';
 import { fetchUserData } from '@/redux/slices/getUserDataSlice';
@@ -12,6 +11,7 @@ import { UserBoxInfo } from '@/components/UserBoxInfo';
 import { DialogFormDataType } from '@/utils/validation';
 import { UserPost_short } from '@/components/UserPost_short';
 import { fetchUserPosts } from '@/redux/slices/getUserPostsSlice';
+import { WritePostButton } from '@/components/userProfile/WritePostButton';
 
 export const UserProfile_page = () => {
   const [ isOpenDialog, setIsOpenDialog ] = useState(false);
@@ -19,7 +19,6 @@ export const UserProfile_page = () => {
   const dispatch: AppDispatch = useDispatch();
   const { fetchUserData_status, data: userData, error: user_error } = useSelector((state: RootState) => state.user);
   const { fetchUserPosts_status, data: post_data, error: post_error } = useSelector((state: RootState) => state.post);
-  console.log("postData, ", post_data.total)
 
   const handleProfileUpdateSuccess = () => {
     dispatch(fetchUserData());
@@ -101,19 +100,19 @@ export const UserProfile_page = () => {
             <UserProfilePost_empty />
           ) : (
             <div className="clamped-container flex flex-col">
-              <p className="text-xl font-bold pt-6">
-                { post_data.total === 1 ? "1 Post" : `${post_data.total} Posts`}
-              </p>
+              <div className="flex flex-col-reverse md:justify-between md:items-center md:flex-row">
+                <p className="text-lg md:text-xl font-bold text-neutral-900 max-md:border-t max-md:border-neutral-300 max-md:pt-4">
+                  { post_data.total === 1 ? "1 Post" : `${post_data.total} Posts`}
+                </p>
+                <WritePostButton />
+              </div>
               <div className={`flex flex-col`}>
-                <UserPost_short status={fetchUserPosts_status} data={post_data} error={post_error}/>
+                <UserPost_short status={fetchUserPosts_status} data={post_data} error={post_error} source="userPost"/>
               </div>
             </div>
           ) 
-        ) : activeTab === "tab-1" ? (
-          <UserProfilePost_changePass />
-        ) : (
-          <UserProfilePost />
-        )}
+        ) : ( activeTab === "tab-1" && <UserProfilePost_changePass />)
+      }
       </div>
     </div>
   )

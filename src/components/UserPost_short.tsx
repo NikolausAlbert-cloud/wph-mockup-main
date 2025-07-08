@@ -1,18 +1,32 @@
-import { getUserPostsResponse } from "@/api/posts";
 import { userPostsButton_data } from "@/constants/userPostsButton_data";
-import useWindowDimensions from "@/hooks/useWindowsDImensions";
+import useWindowDimensions from "@/hooks/useWindowsDimensions";
 import { extractPlainTextFromHtml } from "@/utils/extractPlainTextFromHtml";
 import { formatDate } from "@/utils/formatDate";
 import { limitText } from "@/utils/limitText";
+import { MessageSquare, ThumbsUp } from "lucide-react";
+import React from "react";
 
 type UserPost_shortProps = {
-  status: string;
-  data: getUserPostsResponse;
-  error: string | null;
+  status?: string;
+  data: any;
+  error?: string | null;
+  source: string;
 };
 
-export const UserPost_short = ({ status, data, error }: UserPost_shortProps) => {
+export const UserPost_short = ({ status, data, error, source }: UserPost_shortProps) => {
   const { width } = useWindowDimensions();
+  let dataSource = []
+
+  switch (source) {
+    case "userPost":
+      dataSource = data.data;
+      break;
+    case "publicPost":
+      dataSource = data.pages[0].data;
+      break;
+    default:
+      return;
+  }
 
   if (status === "loading") {
     return <p>Loading....</p>
@@ -21,51 +35,84 @@ export const UserPost_short = ({ status, data, error }: UserPost_shortProps) => 
   if (status === "failed") {
     return <p>Error in fetching user posts data</p>
   }
-  
+  console.log("dataSource: ", dataSource);
   return (
     <>
       <p>{ error }</p>
-      {data.data.map((item) => {
+      {dataSource.map((item:any) => {
         const plainText = extractPlainTextFromHtml(item.content);
         const shortContent = limitText(plainText);
-        const image = <img src={item.imageUrl} alt="Post Image" className="flex-1 w-85 object-cover" />;
+        const image = <img src={item.imageUrl} alt="Post Image" className="w-85 flex-initial object-cover" />;
         const createDate = formatDate(item.createdAt);
         const updateDate = formatDate(item.updateAt);
 
         return (
-          <div key={item.id} className="flex-between gap-6 py-6 border-b-neutral-300 border-b-[1px]">
+          <div key={item.id} className="flex-between gap-4 md:gap-6 py-4 md:py-6 border-b-neutral-300 border-b-[1px]">
             {width > 640 && image}
-            <div className="flex-1 flex-col gap-3 w-109">
-              <h1 className="text-xl font-bold text-neutral-900">{ item.title }</h1>
+            <div className=" max-w-109 flex flex-col gap-2 md:gap-3">
+              <h1 className="text-md md:text-xl font-semibold md:font-bold text-neutral-900">{ item.title }</h1>
               <div className="flex flex-row gap-2">
-                {item.tags.map((tag, i) => {
+                {item.tags.map((tag: string, i: number) => {
                   return (
-                    <p key={i} className="text-xs font-regular text-neutral-900 md:h-7 border-1 border-neutral-300 rounded-md px-2">
+                    <p 
+                    key={i} 
+                    className="text-xs font-regular text-neutral-900 md:h-7 border-1 border-neutral-300 rounded-md px-2"
+                    >
                       { tag }
                     </p>
                   )
                 })}
               </div>
-              <div className="text-sm font-regular text-neutral-900">
+              <div className="text-xs md:text-sm font-regular text-neutral-900">
                 { shortContent }
               </div>
-              <div className="flex-between gap-3 text-xs font-regular text-neutral-700">
-                <p className="pr-3 border-r-1 border-neutral-300">Created at { createDate }</p>
-                <p>Last updated { createDate }</p>
-              </div>
-              <div className="flex flex-row gap-3">
-              {userPostsButton_data.map((item, i) => {
-                const isLastItem = i === userPostsButton_data.length - 1;
-
-                return (
-                  <button key={item.title} 
-                  className={`${item.title === "Delete" ? "text-red-delete" : "text-primary-300"} text-sm font-semibold underline underline-offset-4 cursor-pointer ${!isLastItem ? "border-r-1 border-neutral-300 pr-3" : ""} h-5.5 flex-center`}
-                  >
-                    {item.title}
-                  </button>
-                )
-              })}
-              </div>
+              { source === "userPost" ? (
+               
+                <React.Fragment>
+                  <div className="flex flex-row gap-1 md:gap-3 text-xs font-regular text-neutral-700 whitespace-nowrap">
+                    <p className="pr-1 md:pr-3 border-r-1 border-neutral-300">
+                      Created { createDate.date }, { createDate.time }
+                    </p>
+                    <p>Last updated { createDate.date }, { createDate.time }</p>
+                  </div>
+                  <div className="flex flex-row gap-3">
+                  {userPostsButton_data.map((item, i) => {
+                    const isLastItem = i === userPostsButton_data.length - 1;
+                    return (
+                      <button key={item.title} 
+                      className={`${item.title === "Delete" ? "text-red-delete" : "text-primary-300"} text-sm font-semibold underline underline-offset-4 cursor-pointer ${!isLastItem ? "border-r-1 border-neutral-300 pr-3" : ""} h-5.5 flex-center`}
+                      >
+                        {item.title}
+                      </button>
+                    )
+                  })}
+                  </div>
+                </React.Fragment>
+                
+              ) :  source === "publicPost" && (
+                <React.Fragment>
+                  <div className="flex flex-row items-center gap-3">
+                    <div className="flex-between gap-2">
+                      <img src={item.imageUrl} alt="user image" className="size-10 rounded-full" />
+                      <p className="text-sm font-medium">{ item.author.name }</p>
+                    </div>
+                    <div className="size-1 bg-neutral-400 rounded-full"></div>
+                    <div className="text-sm font-regular text-neutral-600">
+                      {createDate.date}
+                    </div>
+                  </div>
+                  <div className="flex flex-row gap-5 text-sm font-regular max-w-26.5">
+                    <div className="flex-between gap-1 max-w-11">
+                      <ThumbsUp className="size-5 text-neutral-600" />
+                      <p>{ item.likes }</p>
+                    </div>
+                    <div className="flex-between gap-1 max-w-11">
+                      <MessageSquare className="size-5 text-neutral-600" />
+                      <p>{ item.comments }</p>
+                    </div>
+                  </div>
+                </React.Fragment>
+              )}
             </div>
           </div>
         )

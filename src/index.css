@@ -254,6 +254,11 @@ body {
     margin: 0 auto;
     width: clamp(22.56rem, 30.28vw, 27.25rem);
   }
+
+  /* PublicPost Left Side */
+  .clamped-container4 {
+    width: clamp(22.56rem, 56.04vw, 50.44rem);
+  }
 }
 
 @layer utilities {

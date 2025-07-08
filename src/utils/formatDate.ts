@@ -1,4 +1,4 @@
-export const formatDate = (dateData: string): string => {
+export const formatDate = (dateData: string): { date: string, time: string } => {
   const dateObject = new Date(dateData);
   const datePart = dateObject.toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -12,5 +12,8 @@ export const formatDate = (dateData: string): string => {
     hourCycle: "h23",
   });
 
-  return `${datePart}, ${timePart}`;
+  return {
+    date: datePart,
+    time: timePart
+  };
 }

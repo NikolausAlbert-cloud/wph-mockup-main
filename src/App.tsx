@@ -11,7 +11,7 @@ import { Posts } from './pages/Posts';
 import { NavbarPosts } from './components/navbar/NavbarPosts';
 import { UserPostBlog } from './pages/UserPostBlog';
 import { useAuth } from './hooks/useAuth';
-import { useEffect, useState } from 'react';
+import { PublicPost } from './pages/PublicPost';
 
 const App = () => {
   return (
@@ -50,6 +50,7 @@ const AppContent = () => {
         <Route path="/auth/register" element={<SignUpForm_page />} />
         <Route path="/auth/login" element={<SignInForm_page />} />
         <Route path="/userProfile" element={<ProtectedRoute><UserProfile_page /></ProtectedRoute>} />
+        <Route path="/posts/recommended" element={<PublicPost />} />
         <Route path="/posts" element={<Posts />} />
         <Route path="/posts/my-posts" element={<ProtectedRoute><UserPostBlog /></ProtectedRoute>} />
         <Route path="/" element={<Home />} />
