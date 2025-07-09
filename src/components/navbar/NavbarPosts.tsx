@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import useWindowDimensions from "@/hooks/useWindowsDImensions"
+import useWindowDimensions from "@/hooks/useWindowDimensions"
 import { logout } from "@/redux/slices/authSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "@/redux/store"

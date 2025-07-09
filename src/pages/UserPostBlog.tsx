@@ -15,7 +15,7 @@ export const UserPostBlog = () => {
     name: "",
     headline: "",
     avatar: null,
-  })
+  });
 
   useEffect(() => {
     setUserData({

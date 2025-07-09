@@ -1,6 +1,6 @@
 import { customAxios } from "./customAxios";
 
-type PublicPostResponse_dataProps = {
+export type PublicPostResponse_dataProps = {
   id: number,
   title: string,
   content: string,

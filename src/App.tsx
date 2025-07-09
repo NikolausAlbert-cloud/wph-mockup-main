@@ -50,10 +50,9 @@ const AppContent = () => {
         <Route path="/auth/register" element={<SignUpForm_page />} />
         <Route path="/auth/login" element={<SignInForm_page />} />
         <Route path="/userProfile" element={<ProtectedRoute><UserProfile_page /></ProtectedRoute>} />
-        <Route path="/posts/recommended" element={<PublicPost />} />
         <Route path="/posts" element={<Posts />} />
         <Route path="/posts/my-posts" element={<ProtectedRoute><UserPostBlog /></ProtectedRoute>} />
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<PublicPost />} />
         {/* <Route path="*" element={<NotFound />} /> */}
         {/* Add more routes as needed */}
       </Routes>

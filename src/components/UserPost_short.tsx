@@ -1,17 +1,31 @@
+import { PublicPostResponse_dataProps } from "@/api/getPublicPost";
+import { getUserPostsParams_dataProps } from "@/api/posts";
 import { userPostsButton_data } from "@/constants/userPostsButton_data";
-import useWindowDimensions from "@/hooks/useWindowsDimensions";
+import useWindowDimensions from "@/hooks/useWindowDimensions";
 import { extractPlainTextFromHtml } from "@/utils/extractPlainTextFromHtml";
 import { formatDate } from "@/utils/formatDate";
 import { limitText } from "@/utils/limitText";
 import { MessageSquare, ThumbsUp } from "lucide-react";
 import React from "react";
+import { PostImageHandler } from "./Posts/PostImageHandler";
 
-type UserPost_shortProps = {
+interface BaseUserPostShortProps {
   status?: string;
-  data: any;
   error?: string | null;
-  source: string;
+}
+
+type UserPostShort_PublicPost = BaseUserPostShortProps & {
+  source: "publicPost";
+  data: { pages: { data: PublicPostResponse_dataProps[] }[] }; 
 };
+
+type UserPostShort_UserPost = BaseUserPostShortProps & {
+  source: "userPost";
+  data: { data: getUserPostsParams_dataProps[] };
+};
+
+type UserPost_shortProps = UserPostShort_PublicPost | UserPostShort_UserPost;
+type ItemProps = PublicPostResponse_dataProps | getUserPostsParams_dataProps;
 
 export const UserPost_short = ({ status, data, error, source }: UserPost_shortProps) => {
   const { width } = useWindowDimensions();
@@ -35,28 +49,37 @@ export const UserPost_short = ({ status, data, error, source }: UserPost_shortPr
   if (status === "failed") {
     return <p>Error in fetching user posts data</p>
   }
-  console.log("dataSource: ", dataSource);
+
   return (
     <>
-      <p>{ error }</p>
-      {dataSource.map((item:any) => {
+      {dataSource.map((item: ItemProps) => {
         const plainText = extractPlainTextFromHtml(item.content);
         const shortContent = limitText(plainText);
-        const image = <img src={item.imageUrl} alt="Post Image" className="w-85 flex-initial object-cover" />;
         const createDate = formatDate(item.createdAt);
-        const updateDate = formatDate(item.updateAt);
+      // const updateDate = formatDate(item.updateAt);
+
+      const mainPostImage = (
+        <PostImageHandler
+            imageUrl={item.imageUrl}
+            altText="Post Image"
+            className="w-55 flex-initial object-cover"
+        />
+      );
 
         return (
-          <div key={item.id} className="flex-between gap-4 md:gap-6 py-4 md:py-6 border-b-neutral-300 border-b-[1px]">
-            {width > 640 && image}
-            <div className=" max-w-109 flex flex-col gap-2 md:gap-3">
+          <div 
+            key={item.id} 
+            className="flex-between gap-4 md:gap-6 py-4 md:py-6 w-full lg:max-w-184 max-h-81 border-b-neutral-300 border-b-[1px]"
+          >
+            {width > 640 && mainPostImage}
+            <div className="w-111 flex flex-col gap-2 md:gap-3">
               <h1 className="text-md md:text-xl font-semibold md:font-bold text-neutral-900">{ item.title }</h1>
               <div className="flex flex-row gap-2">
-                {item.tags.map((tag: string, i: number) => {
+                {item.tags.map((tag: string) => {
                   return (
                     <p 
-                    key={i} 
-                    className="text-xs font-regular text-neutral-900 md:h-7 border-1 border-neutral-300 rounded-md px-2"
+                      key={`${item.id}-${tag}`} 
+                      className="text-xs font-regular text-neutral-900 md:h-7 border-1 border-neutral-300 rounded-md px-2"
                     >
                       { tag }
                     </p>
@@ -76,13 +99,13 @@ export const UserPost_short = ({ status, data, error, source }: UserPost_shortPr
                     <p>Last updated { createDate.date }, { createDate.time }</p>
                   </div>
                   <div className="flex flex-row gap-3">
-                  {userPostsButton_data.map((item, i) => {
+                  {userPostsButton_data.map((btnItem, i) => {
                     const isLastItem = i === userPostsButton_data.length - 1;
                     return (
-                      <button key={item.title} 
-                      className={`${item.title === "Delete" ? "text-red-delete" : "text-primary-300"} text-sm font-semibold underline underline-offset-4 cursor-pointer ${!isLastItem ? "border-r-1 border-neutral-300 pr-3" : ""} h-5.5 flex-center`}
+                      <button key={btnItem.title} 
+                        className={`${btnItem.title === "Delete" ? "text-red-delete" : "text-primary-300"} text-sm font-semibold underline underline-offset-4 cursor-pointer ${!isLastItem ? "border-r-1 border-neutral-300 pr-3" : ""} h-5.5 flex-center`}
                       >
-                        {item.title}
+                        {btnItem.title}
                       </button>
                     )
                   })}
