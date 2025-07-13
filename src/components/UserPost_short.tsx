@@ -29,14 +29,17 @@ type ItemProps = PublicPostResponse_dataProps | getUserPostsParams_dataProps;
 
 export const UserPost_short = ({ status, data, error, source }: UserPost_shortProps) => {
   const { width } = useWindowDimensions();
-  let dataSource = []
+  let dataSource = [];
+  let classContainer = "";
 
   switch (source) {
     case "userPost":
       dataSource = data.data;
+      classContainer = ""
       break;
     case "publicPost":
       dataSource = data.pages[0].data;
+      classContainer = "flex-between gap-4 md:gap-6"
       break;
     default:
       return;
@@ -53,8 +56,6 @@ export const UserPost_short = ({ status, data, error, source }: UserPost_shortPr
   return (
     <>
       {dataSource.map((item: ItemProps) => {
-        const plainText = extractPlainTextFromHtml(item.content);
-        const shortContent = limitText(plainText);
         const createDate = formatDate(item.createdAt);
       // const updateDate = formatDate(item.updateAt);
 
@@ -62,18 +63,21 @@ export const UserPost_short = ({ status, data, error, source }: UserPost_shortPr
         <PostImageHandler
             imageUrl={item.imageUrl}
             altText="Post Image"
-            className="w-55 flex-initial object-cover"
+            className="w-85 flex-none py-2"
         />
       );
 
-        return (
-          <div 
-            key={item.id} 
-            className="flex-between gap-4 md:gap-6 py-4 md:py-6 w-full lg:max-w-184 max-h-81 border-b-neutral-300 border-b-[1px]"
-          >
+      return (
+        <div 
+          key={item.id} 
+          className="w-full flex-center h-69 py-4 md:py-5 border-neutral-300 border-t-[1px]"
+        >
+          <div className={`w-full flex justify-between gap-4 md:gap-6 ${classContainer}`}>
             {width > 640 && mainPostImage}
-            <div className="w-111 flex flex-col gap-2 md:gap-3">
-              <h1 className="text-md md:text-xl font-semibold md:font-bold text-neutral-900">{ item.title }</h1>
+            <div className="w-full max-w-109 flex-col justify-start gap-2 md:gap-3 overflow-hidden">
+              <h1 className="text-md md:text-xl font-semibold md:font-bold text-neutral-900">
+                { item.title }
+              </h1>
               <div className="flex flex-row gap-2">
                 {item.tags.map((tag: string) => {
                   return (
@@ -87,12 +91,14 @@ export const UserPost_short = ({ status, data, error, source }: UserPost_shortPr
                 })}
               </div>
               <div className="text-xs md:text-sm font-regular text-neutral-900">
-                { shortContent }
+                { item.content }
               </div>
               { source === "userPost" ? (
-               
+              
                 <React.Fragment>
-                  <div className="flex flex-row gap-1 md:gap-3 text-xs font-regular text-neutral-700 whitespace-nowrap">
+                  <div 
+                    className="flex flex-row gap-1 md:gap-3 text-xs font-regular text-neutral-700"
+                  >
                     <p className="pr-1 md:pr-3 border-r-1 border-neutral-300">
                       Created { createDate.date }, { createDate.time }
                     </p>
@@ -138,7 +144,8 @@ export const UserPost_short = ({ status, data, error, source }: UserPost_shortPr
               )}
             </div>
           </div>
-        )
+        </div>
+      )
       })}
     </>
   )

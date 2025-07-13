@@ -33,6 +33,7 @@ export const PostImageHandler: React.FC<PostImageHandlerProps> = ({ imageUrl, al
       className={className} 
       onError={(e) => {
         setHasError(true);
-      }} />
+      }} 
+    />
   )
 }

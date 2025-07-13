@@ -49,16 +49,21 @@ export const UserPostBlog = () => {
   }
 
   return (
-    <div className="mt-22 md:mt-32 w-full">
-      <div className="clamped-container flex-start border-b-neutral-300 border-b-[1px] md:h-26 md:pb-6">
-        {content}
-      </div>
-      <div className="clamped-container flex flex-col">
-        <p className="text-xl font-bold pt-6">
-          {post_data.total > 0 ? post_data.total === 1 ? "1 Post" : `${post_data.total} Posts` : "No Posts"}
-        </p>
-        <div className={`flex flex-col`}>
-          <UserPost_short status={fetchUserPosts_status} data={post_data} error={post_error} source="userPost" />
+    <div className="flex-center mt-22 md:mt-32 px-0 w-full">
+      <div className="w-full max-w-200">
+        <div className="border-neutral-300 border-b-[1px] md:h-26 md:pb-6">
+          {content}
+        </div>
+        <div className="flex-center">
+          <p className="text-xl font-bold pt-6">
+            {post_data.total > 0 ? post_data.total === 1 ? "1 Post" : `${post_data.total} Posts` : "No Posts"}
+          </p>
+          <UserPost_short 
+            status={fetchUserPosts_status} 
+            data={post_data} 
+            error={post_error} 
+            source="userPost" 
+          />
         </div>
       </div>
     </div>

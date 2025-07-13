@@ -53,66 +53,69 @@ export const UserProfile_page = () => {
   }, [fetchUserPosts_status])
  
   return (
-    <div className="mt-20 md:mt-32 flex-center flex-col gap-4 md:gap-5">
+    <div className="custom-subContainer mt-20 md:mt-32 flex-center flex-col gap-4 md:gap-5">
       { fetchUserData_status === "loading" ? (
-        <p>Loading user data...</p>
+        <p className="px-4">Loading user data...</p>
       ) : fetchUserData_status === "failed" ? (
-        <p className="text-red-500">{ user_error }</p>
+        <p className="text-red-500 px-4">{ user_error }</p>
       ) : (
-        <div 
-        className="clamped-container h-19 md:h-28 px-4 md:px-6 py-3.5 md:py-4 flex-between border border-neutral-300 rounded-2xl"
-        >
-          <UserBoxInfo dialogFormData={dialogFormData} />
-          <UserProfile_dialog 
-            isOpenDialog={isOpenDialog}
-            setIsOpenDialog={setIsOpenDialog}
-            dialogFormData= {dialogFormData}
-            onProfileUpdated={handleProfileUpdateSuccess}
-          />
+        <div className="w-full px-4">
+          <div 
+            className="h-19 md:h-28 px-4 md:px-6 py-3.5 md:py-4 flex-between border border-neutral-300 rounded-2xl"
+          >
+            <UserBoxInfo dialogFormData={dialogFormData} />
+            <UserProfile_dialog 
+              isOpenDialog={isOpenDialog}
+              setIsOpenDialog={setIsOpenDialog}
+              dialogFormData= {dialogFormData}
+              onProfileUpdated={handleProfileUpdateSuccess}
+            />
+          </div>
         </div>
       )}
       
       {/* Tabs */}
-      <div className="flex-start clamped-container">
-      {userProfileTab_data.map((item, i) => {
-        return (
-          <div 
-            key={i} 
-            onClick={() => setActiveTab(`tab-${i}`)}
-            className={`flex-center flex-row h-11 w-44.5 cursor-pointer text-xs md:text-sm font-regular border-b ${activeTab === `tab-${i}` ? "text-primary-300 font-semibold border-primary-300 border-b-3" : "text-neutral-950 border-neutral-300"}`}
-          >
-            <p>{ item.title }</p>
-          </div>
-        )
-      })}
+      <div className="w-full px-4">
+        <div className="flex-start">
+        {userProfileTab_data.map((item, i) => {
+          return (
+            <div 
+              key={i} 
+              onClick={() => setActiveTab(`tab-${i}`)}
+              className={`flex-center flex-row h-11 max-md:w-full w-44.5 cursor-pointer text-xs md:text-sm font-regular border-b ${activeTab === `tab-${i}` ? "text-primary-300 font-semibold border-primary-300 border-b-3" : "text-neutral-950 border-neutral-300"}`}
+            >
+              <p>{ item.title }</p>
+            </div>
+          )
+        })}
+        </div>
       </div>
 
       {/* Tab's content */}
-      <div className="clamped-container">
+      <div className="w-full">
         { activeTab === "tab-0" ? (
-          fetchUserPosts_status === "loading" ? (
-            <p>Loading user's posts...</p>
-          ) : 
-          fetchUserPosts_status === "failed" ? (
-            <p className="text-red-500">{ post_error }</p>
-          ) : 
-          post_data.total <= 0 ? (
-            <UserProfilePost_empty />
-          ) : (
-            <div className="clamped-container flex flex-col">
-              <div className="flex flex-col-reverse md:justify-between md:items-center md:flex-row">
-                <p className="text-lg md:text-xl font-bold text-neutral-900 max-md:border-t max-md:border-neutral-300 max-md:pt-4">
-                  { post_data.total === 1 ? "1 Post" : `${post_data.total} Posts`}
-                </p>
-                <WritePostButton />
-              </div>
-              <div className={`flex flex-col`}>
-                <UserPost_short status={fetchUserPosts_status} data={post_data} error={post_error} source="userPost"/>
-              </div>
-            </div>
-          ) 
-        ) : ( activeTab === "tab-1" && <UserProfilePost_changePass />)
-      }
+        fetchUserPosts_status === "loading" ? (
+          <p>Loading user's posts...</p>
+        ) : 
+        fetchUserPosts_status === "failed" ? (
+          <p className="text-red-500">{ post_error }</p>
+        ) : 
+        post_data.total <= 0 ? (
+          <UserProfilePost_empty />
+        ) : (
+        <div className="w-full flex-center flex-col px-4">
+          <div className="w-full flex flex-col-reverse md:justify-between md:items-center md:flex-row pb-5">
+            <p className="text-lg md:text-xl font-bold text-neutral-900 max-md:border-t max-md:border-neutral-300 max-md:pt-4">
+              { post_data.total === 1 ? "1 Post" : `${post_data.total} Posts`}
+            </p>
+            <WritePostButton />
+          </div>
+          <div className={`w-full flex flex-col`}>
+            <UserPost_short status={fetchUserPosts_status} data={post_data} error={post_error} source="userPost"/>
+          </div>
+        </div>
+        )) : ( activeTab === "tab-1" && <UserProfilePost_changePass />)
+        } 
       </div>
     </div>
   )

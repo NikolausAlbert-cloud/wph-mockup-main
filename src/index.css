@@ -238,9 +238,9 @@ body {
   }
 
   /* userProfile_page editProfile */
-  .clamped-container {
-    margin: 0 auto;
-    width: clamp(22.56rem, 55.56vw, 50rem);
+  .custom-subContainer {
+    @apply max-w-200 w-full;
+    margin: 0 auto; 
   }
 
   /* Posts */
