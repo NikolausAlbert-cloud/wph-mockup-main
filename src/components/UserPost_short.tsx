@@ -61,21 +61,22 @@ export const UserPost_short = ({ status, data, error, source }: UserPost_shortPr
 
       const mainPostImage = (
         <PostImageHandler
+            component="postblog"
             imageUrl={item.imageUrl}
             altText="Post Image"
-            className="w-85 flex-none py-2"
+            className="w-85 h-full flex-none py-2"
         />
       );
 
       return (
         <div 
           key={item.id} 
-          className="w-full flex-center h-69 py-4 md:py-5 border-neutral-300 border-t-[1px]"
+          className="w-full flex h-63 md:h-74.5 py-4 md:py-5 border-neutral-300 border-t-[1px]"
         >
-          <div className={`w-full flex justify-between gap-4 md:gap-6 ${classContainer}`}>
+          <div className={`w-full flex justify-between gap-4 md:gap-6 h-55 md:h-64.5 ${classContainer}`}>
             {width > 640 && mainPostImage}
-            <div className="w-full max-w-109 flex-col justify-start gap-2 md:gap-3 overflow-hidden">
-              <h1 className="text-md md:text-xl font-semibold md:font-bold text-neutral-900">
+            <div className="w-full max-w-109 py-2 flex flex-col justify-between overflow-hidden">
+              <h1 className="text-md md:text-xl font-semibold flex md:font-bold text-neutral-900">
                 { item.title }
               </h1>
               <div className="flex flex-row gap-2">
@@ -83,21 +84,21 @@ export const UserPost_short = ({ status, data, error, source }: UserPost_shortPr
                   return (
                     <p 
                       key={`${item.id}-${tag}`} 
-                      className="text-xs font-regular text-neutral-900 md:h-7 border-1 border-neutral-300 rounded-md px-2"
+                      className="text-xs font-regular text-neutral-900 h-7 border-1 border-neutral-300 rounded-md px-2"
                     >
                       { tag }
                     </p>
                   )
                 })}
               </div>
-              <div className="text-xs md:text-sm font-regular text-neutral-900">
+              <div className="text-xs md:text-sm font-regular h-12 md:h-14 text-neutral-900 overflow-auto">
                 { item.content }
               </div>
               { source === "userPost" ? (
               
                 <React.Fragment>
                   <div 
-                    className="flex flex-row gap-1 md:gap-3 text-xs font-regular text-neutral-700"
+                    className="flex flex-row gap-1 md:gap-3 text-xs h-6 font-regular text-neutral-700 overflow-auto"
                   >
                     <p className="pr-1 md:pr-3 border-r-1 border-neutral-300">
                       Created { createDate.date }, { createDate.time }

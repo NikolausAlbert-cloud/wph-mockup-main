@@ -1,5 +1,6 @@
-import UserPhoto from "@/assets/images/logo.svg";
+import UserPhoto from "@/assets/images/person-laptop.svg";
 import { DialogFormDataType } from "@/utils/validation";
+import { PostImageHandler } from "./Posts/PostImageHandler";
 
 type UserBoxInfoProps = {
   dialogFormData: DialogFormDataType;
@@ -11,14 +12,24 @@ export const UserBoxInfo = ({ dialogFormData }: UserBoxInfoProps) => {
     ? dialogFormData.avatar
     : dialogFormData.avatar instanceof File
     ? URL.createObjectURL(dialogFormData.avatar)
-    : null;
+    : dialogFormData.name;
 
-  console.log("userboxINfo avatarSrc ", typeof(avatarSrc), avatarSrc)
+  console.log("userboxINfo avatarSrc ", typeof(avatarSrc), dialogFormData)
+
+   const mainPostImage = (
+    <PostImageHandler
+      name={dialogFormData.name}
+      component="userboxinfo"
+      imageUrl={avatarSrc}
+      altText="Post Image"
+      className="size-20 rounded-full object-cover"
+    />
+  );
 
   return (
     <div className='flex-between gap-3 h-3 md:h-20'>
     { avatarSrc ? (
-      <img src={avatarSrc} alt="User Avatar" className="size-20 rounded-full object-cover" />
+      mainPostImage
     ) : (
       <UserPhoto className="size:12.5 md:size-20"/>
     )} 
