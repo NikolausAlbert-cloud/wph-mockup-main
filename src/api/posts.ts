@@ -21,14 +21,33 @@ type PostsResponse = {
   comments: number;
 };
 
-type getUserPostsParams = {
+type GetUserPostsParams = {
   payload: {
     limit: number;
     page: number;
   }
 };
 
-type getUserPostsParams_dataProps =  {
+const postPosts = async ({ payload }: PostsParams): Promise<PostsResponse> => {
+  const formData = new FormData();
+  formData.append("title", payload.title);
+  formData.append("content", payload.content);
+
+  // Append tags as separate entries if your backend expects it that way for arrays
+  payload.tags.forEach(tag => formData.append("tags[]", tag));
+
+  // Append the actual image file with the correct field name for your backend
+  formData.append("image", payload.coverImage);
+
+  const response = await customAxios.post<PostsResponse>("/posts", formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+}
+
+type GetUserPostsParams_dataProps =  {
   id: number;
   title: string,
   content: string;
@@ -44,46 +63,91 @@ type getUserPostsParams_dataProps =  {
   }
 };
 
-type getUserPostsResponse = {
-  data: getUserPostsParams_dataProps[];
+type GetUserPostsResponse = {
+  data: GetUserPostsParams_dataProps[];
   total: number;
   page: number;
   lastPage: number;
 };
 
-const postPosts = async ({ payload }: PostsParams): Promise<PostsResponse> => {
-  const formData = new FormData();
-  formData.append("title", payload.title);
-  formData.append("content", payload.content);
+const getUserPosts = async ({ payload }: GetUserPostsParams): Promise<GetUserPostsResponse> => {
+  const response = await customAxios.get(
+    `/posts/my-posts?limit=${payload.limit}&page=${payload.page}`
+  );
+  return response.data;
+};
 
-  // Append tags as separate entries if your backend expects it that way for arrays
-  payload.tags.forEach(tag => formData.append("tags[]", tag));
+type GetPublicPostResponse_dataProps = {
+  id: number,
+  title: string,
+  content: string,
+  tags: string [],
+  imageUrl: string,
+  author: {
+    id: number,
+    name: string,
+    email: string,
+  },
+  createdAt: string,
+  likes: number,
+  comments: number
+};
 
-  // Append the actual image file with the correct field name for your backend
-  formData.append("image", payload.coverImage);
+type GetPublicPostResponse = {
+  data: GetPublicPostResponse_dataProps[],
+  total: number,
+  page: number,
+  lastPage: number
+};
 
-  console.log("FormData for postPosts will be sent.");
-
-  const response = await customAxios.post<PostsResponse>("/posts", formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+const getPublicPost = async (page: number, limit: number): Promise<GetPublicPostResponse> => {
+  const response = await customAxios.get(`/posts/recommended?page=${page}&limit=${limit}`);
   return response.data;
 }
 
-const getUserPosts = async ({ payload }: getUserPostsParams): Promise<getUserPostsResponse> => {
-  const response = await customAxios.get(`/posts/my-posts?limit=${payload.limit}&page=${payload.page}`)
+type GetMostLikePostsResponse_dataProps = {
+  id: number;
+  title: string;
+  content: string;
+  tags: string[];
+  imageUrl: string;
+  createdAt: string;
+  likes: number;
+  comments: number;
+  author: {
+    id: number;
+    name: string;
+    email: string;
+  };
+}
+
+type GetMostLikePostsResponse = {
+  data: GetMostLikePostsResponse_dataProps[];
+  total: number;
+  page: number;
+  lastPage: number;
+};
+
+const getMostLikePosts = async (page: number, limit: number): Promise<GetMostLikePostsResponse> => {
+  const response = await customAxios.get(
+    `posts/most-liked?limit=${limit}&page=${page}`
+  );
   return response.data;
 }
 
 export type {
-  getUserPostsParams_dataProps,
-  getUserPostsParams,
-  getUserPostsResponse,
+  GetUserPostsParams_dataProps,
+  GetUserPostsParams,
+  GetUserPostsResponse,
+  GetPublicPostResponse_dataProps,
+  GetPublicPostResponse,
+  GetMostLikePostsResponse_dataProps,
+  GetMostLikePostsResponse,
 }
 
 export {
   postPosts,
-  getUserPosts
+  getUserPosts,
+  getPublicPost,
+  getMostLikePosts,
 }

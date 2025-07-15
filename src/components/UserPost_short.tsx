@@ -1,5 +1,5 @@
-import { PublicPostResponse_dataProps } from "@/api/getPublicPost";
-import { getUserPostsParams_dataProps } from "@/api/posts";
+import { GetPublicPostResponse_dataProps } from "@/api/posts";
+import { GetUserPostsParams_dataProps } from "@/api/posts";
 import { userPostsButton_data } from "@/constants/userPostsButton_data";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import { formatDate } from "@/utils/formatDate";
@@ -20,11 +20,11 @@ type UserPostShort_PublicPost = BaseUserPostShortProps & {
 
 type UserPostShort_UserPost = BaseUserPostShortProps & {
   source: "userPost";
-  data: { data: getUserPostsParams_dataProps[] };
+  data: { data: GetUserPostsParams_dataProps[] };
 };
 
 type UserPost_shortProps = UserPostShort_PublicPost | UserPostShort_UserPost;
-type ItemProps = PublicPostResponse_dataProps | getUserPostsParams_dataProps;
+type ItemProps = GetPublicPostResponse_dataProps | GetUserPostsParams_dataProps;
 
 export const UserPost_short = ({ 
   status, data, error, source, breakpoint 
@@ -63,10 +63,10 @@ export const UserPost_short = ({
 
         const mainPostImage = (
           <PostImageHandler
-              component="postblog"
-              imageUrl={item.imageUrl}
-              altText="Post Image"
-              className="w-full max-w-85 h-full flex-none py-2"
+            component="postblog"
+            imageUrl={item.imageUrl}
+            altText="Post Image"
+            className="w-full max-w-85 h-full flex-none py-2"
           />
         );
 

@@ -1,17 +1,17 @@
-import { getPublicPost } from "@/api/posts";
+import { getMostLikePosts } from "@/api/posts";
 import { useInfiniteQuery } from "@tanstack/react-query"
 
-export const useInfinitePublicPost = () => {
+export const useInfiniteMostLikePost = () => {
   return useInfiniteQuery({
-    queryKey: ["publicPost"],
+    queryKey: ["mostLikePosts"],
 
     queryFn: ({ pageParam = 1}: { pageParam: number }) => {
       const limit = 10;
-      return getPublicPost(pageParam, limit);
+      return getMostLikePosts(pageParam, limit);
     },
 
     getNextPageParam: (lastPage: any) => (lastPage.nextPage ? lastPage.nextPage : undefined),
 
     initialPageParam: 1,
-  });
+  })
 };
