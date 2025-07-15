@@ -2,9 +2,7 @@ import { PublicPostResponse_dataProps } from "@/api/getPublicPost";
 import { getUserPostsParams_dataProps } from "@/api/posts";
 import { userPostsButton_data } from "@/constants/userPostsButton_data";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
-import { extractPlainTextFromHtml } from "@/utils/extractPlainTextFromHtml";
 import { formatDate } from "@/utils/formatDate";
-import { limitText } from "@/utils/limitText";
 import { MessageSquare, ThumbsUp } from "lucide-react";
 import React from "react";
 import { PostImageHandler } from "./Posts/PostImageHandler";
@@ -12,6 +10,7 @@ import { PostImageHandler } from "./Posts/PostImageHandler";
 interface BaseUserPostShortProps {
   status?: string;
   error?: string | null;
+  breakpoint?: number;
 }
 
 type UserPostShort_PublicPost = BaseUserPostShortProps & {
@@ -27,19 +26,21 @@ type UserPostShort_UserPost = BaseUserPostShortProps & {
 type UserPost_shortProps = UserPostShort_PublicPost | UserPostShort_UserPost;
 type ItemProps = PublicPostResponse_dataProps | getUserPostsParams_dataProps;
 
-export const UserPost_short = ({ status, data, error, source }: UserPost_shortProps) => {
+export const UserPost_short = ({ 
+  status, data, error, source, breakpoint 
+}: UserPost_shortProps) => {
   const { width } = useWindowDimensions();
   let dataSource = [];
-  let classContainer = "";
 
+  let containerClassName = "";
   switch (source) {
     case "userPost":
       dataSource = data.data;
-      classContainer = ""
+      containerClassName = "h-63 md:h-74.5";
       break;
     case "publicPost":
       dataSource = data.pages[0].data;
-      classContainer = "flex-between gap-4 md:gap-6"
+      containerClassName = "h-66.5 md:h-74.5";
       break;
     default:
       return;
@@ -55,50 +56,52 @@ export const UserPost_short = ({ status, data, error, source }: UserPost_shortPr
 
   return (
     <>
-      {dataSource.map((item: ItemProps) => {
+      {dataSource.map((item: ItemProps, i) => {
         const createDate = formatDate(item.createdAt);
       // const updateDate = formatDate(item.updateAt);
+        console.log("item: ", item)
 
-      const mainPostImage = (
-        <PostImageHandler
-            component="postblog"
-            imageUrl={item.imageUrl}
-            altText="Post Image"
-            className="w-85 h-full flex-none py-2"
-        />
-      );
+        const mainPostImage = (
+          <PostImageHandler
+              component="postblog"
+              imageUrl={item.imageUrl}
+              altText="Post Image"
+              className="w-full max-w-85 h-full flex-none py-2"
+          />
+        );
 
-      return (
-        <div 
-          key={item.id} 
-          className="w-full flex h-63 md:h-74.5 py-4 md:py-5 border-neutral-300 border-t-[1px]"
-        >
-          <div className={`w-full flex justify-between gap-4 md:gap-6 h-55 md:h-64.5 ${classContainer}`}>
-            {width > 640 && mainPostImage}
-            <div className="w-full max-w-109 py-2 flex flex-col justify-between overflow-hidden">
-              <h1 className="text-md md:text-xl font-semibold flex md:font-bold text-neutral-900">
-                { item.title }
-              </h1>
-              <div className="flex flex-row gap-2">
-                {item.tags.map((tag: string) => {
-                  return (
-                    <p 
-                      key={`${item.id}-${tag}`} 
-                      className="text-xs font-regular text-neutral-900 h-7 border-1 border-neutral-300 rounded-md px-2"
-                    >
-                      { tag }
-                    </p>
-                  )
-                })}
-              </div>
-              <div className="text-xs md:text-sm font-regular h-12 md:h-14 text-neutral-900 overflow-auto">
-                { item.content }
-              </div>
-              { source === "userPost" ? (
-              
+        return (
+          <div 
+            key={item.id} 
+            className={`${containerClassName} w-full flex py-4 md:py-5 border-neutral-300 ${source === "publicPost" && i === 0 ? "" : "border-t-[1px]"}`}
+          >
+            <div className={`w-full flex justify-between gap-4 md:gap-6 h-55 md:h-64.5`}>
+              {width > 640 && mainPostImage}
+              <div 
+                className={`w-full ${source === "publicPost" && width < breakpoint ? "" : "max-w-109"} py-2 flex flex-col gap-2 justify-between overflow-hidden`}
+              >
+                <h1 className="max-h:15 md:max-h-17 truncate text-md md:text-xl font-semibold flex md:font-bold text-neutral-900">
+                  { item.title }
+                </h1>
+                <div className="flex flex-row gap-2">
+                  {item.tags.map((tag: string) => {
+                    return (
+                      <p 
+                        key={`${item.id}-${tag}`} 
+                        className="text-xs font-regular text-neutral-900 h-7 border-1 border-neutral-300 rounded-md px-2"
+                      >
+                        { tag }
+                      </p>
+                    )
+                  })}
+                </div>
+                <div className="text-xs md:text-sm font-regular h-12 md:h-14 text-neutral-900 overflow-hidden text-ellipsis">
+                  { item.content }
+                </div>
+                { source === "userPost" ? (
                 <React.Fragment>
                   <div 
-                    className="flex flex-row gap-1 md:gap-3 text-xs h-6 font-regular text-neutral-700 overflow-auto"
+                    className="flex flex-row gap-1 md:gap-3 text-xs h-6 font-regular text-neutral-700 overflow-hidden text-ellipsis"
                   >
                     <p className="pr-1 md:pr-3 border-r-1 border-neutral-300">
                       Created { createDate.date }, { createDate.time }
@@ -106,8 +109,8 @@ export const UserPost_short = ({ status, data, error, source }: UserPost_shortPr
                     <p>Last updated { createDate.date }, { createDate.time }</p>
                   </div>
                   <div className="flex flex-row gap-3">
-                  {userPostsButton_data.map((btnItem, i) => {
-                    const isLastItem = i === userPostsButton_data.length - 1;
+                  {userPostsButton_data.map((btnItem, j) => {
+                    const isLastItem = j === userPostsButton_data.length - 1;
                     return (
                       <button key={btnItem.title} 
                         className={`${btnItem.title === "Delete" ? "text-red-delete" : "text-primary-300"} text-sm font-semibold underline underline-offset-4 cursor-pointer ${!isLastItem ? "border-r-1 border-neutral-300 pr-3" : ""} h-5.5 flex-center`}
@@ -117,13 +120,14 @@ export const UserPost_short = ({ status, data, error, source }: UserPost_shortPr
                     )
                   })}
                   </div>
-                </React.Fragment>
-                
-              ) :  source === "publicPost" && (
+                </React.Fragment> 
+                ) :  source === "publicPost" && (
                 <React.Fragment>
                   <div className="flex flex-row items-center gap-3">
                     <div className="flex-between gap-2">
-                      <img src={item.imageUrl} alt="user image" className="size-10 rounded-full" />
+                      <div className="size-10 rounded-full bg-primary-200 text-sm overflow-hidden text-ellipsis flex-center">
+                        {item.author.name}
+                      </div>
                       <p className="text-sm font-medium">{ item.author.name }</p>
                     </div>
                     <div className="size-1 bg-neutral-400 rounded-full"></div>
@@ -142,11 +146,11 @@ export const UserPost_short = ({ status, data, error, source }: UserPost_shortPr
                     </div>
                   </div>
                 </React.Fragment>
-              )}
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )
+        )
       })}
     </>
   )
