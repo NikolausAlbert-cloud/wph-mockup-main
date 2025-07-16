@@ -4,12 +4,13 @@ import DefaultSvgComponent from "@/assets/images/person-laptop.svg";
 type PostImageHandlerProps = {
   name?: string;
   component: string;
-  imageUrl: string | File;
+  imageUrl?: string | File ;
   altText: string;
   className: string;
+  imgSize?: string;
 };
 
-export const PostImageHandler: React.FC<PostImageHandlerProps> = ({ name, component, imageUrl, altText, className }) => {
+export const PostImageHandler: React.FC<PostImageHandlerProps> = ({ name, component, imageUrl, altText, className, imgSize }) => {
   const [ hasError, setHasError ] = useState(false);
 
   useEffect(() => {
@@ -18,15 +19,18 @@ export const PostImageHandler: React.FC<PostImageHandlerProps> = ({ name, compon
     };
   }, [imageUrl]);
 
-  const componentImage = component;
+  const imageSrc = ["navbar", "userboxinfo", "userprofiledialog"]
+
   if (hasError) {
-    if (componentImage === "userboxinfo") {
+    if (imageSrc.includes(component)) {
       return (
-        <div className="bg-primary-300 rounded-full size-20 flex-center">
+        <div 
+          className={`bg-primary-200 rounded-full ${imgSize ? imgSize : "size-20"} flex-center overflow-hidden`}
+        >
           {name}
         </div>
       )  
-    } else if (componentImage === "postblog") {
+    } else {
       return (
         <DefaultSvgComponent 
           className={className} 

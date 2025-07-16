@@ -3,7 +3,6 @@ import { Button } from "../ui/button"
 import Logo from "@/assets/images/logo.svg"
 import { Search, Menu, PencilLine, User, LogOut } from "lucide-react"
 import { useEffect, useState } from "react"
-import UserPhoto from "@/assets/images/logo.svg"
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet"
 import {
   DropdownMenu,
@@ -14,28 +13,27 @@ import {
 import useWindowDimensions from "@/hooks/useWindowDimensions"
 import { logout } from "@/redux/slices/authSlice"
 import { useDispatch, useSelector } from "react-redux"
-import { RootState } from "@/redux/store"
+import { AppDispatch, RootState } from "@/redux/store"
 import { useTitleCase } from "@/hooks/useTitleCase"
+import { PostImageHandler } from "../Posts/PostImageHandler"
+import { fetchUserData } from "@/redux/slices/getUserDataSlice"
 
 export const Navbar = () => {
-  const dispatch = useDispatch();
+  const dispatch:AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [ isToken, setIsToken ] = useState(false);
   const { width } = useWindowDimensions();
+  const { fetchUserData_status, data, error } = useSelector((state:RootState) => state.user);
 
-  const response = useSelector((state:RootState) => state.user);
-  const name = useTitleCase(response.data.name);
-
-// Define different sideOffset values based on screen width
-const getSideOffset = () => {
-  if (width < 640) { 
-    return 5; 
-  } else if (width >= 640 && width < 1024) { 
-    return 8;
-  } else { 
-    return 15;
-  }
-};
+  const getSideOffset = () => {
+    if (width < 640) { 
+      return 5; 
+    } else if (width >= 640 && width < 1024) { 
+      return 8;
+    } else { 
+      return 15;
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -46,18 +44,42 @@ const getSideOffset = () => {
     }  
   }, []);
 
+  useEffect(() => {
+    if (fetchUserData_status === "idle") {
+      dispatch(fetchUserData())
+    }
+  }, [dispatch, fetchUserData_status])
+
   const handleClick_logout = () => {
     dispatch(logout());
     navigate("/auth/login");
   };
 
+  const userProfileImage = (
+    <PostImageHandler 
+      component="navbar"
+      imageUrl={data.avatarUrl}
+      altText="User Image"
+      name={data.name}
+      className="rounded-full"
+      imgSize="size-10"
+    />
+  )
+
+  let info;
+  if (fetchUserData_status === "loading") {
+    info = <p>Loading...</p>
+  } else if (fetchUserData_status === "failed") {
+    info = <p>Error: { error || "Failed to fetch user data." }</p>
+  }
+
   return (
     <header className="fixed z-50 top-0 w-full border-b border-neutral-300 border-0.25 bg-white">
       <div className="flex-between max-md:px-4 custom-container h-16 md:h-20" >
-        <div className="flex-between gap-1.5 h-9">
+        <Link to="/" className="flex-between gap-1.5 h-9 pointer-cursor">
           <Logo />
           <p className="text-neutral-950 font-semibold text-md md:text-xl ">Your Logo</p>
-        </div>
+        </Link>
         <div className="relative hidden lg:flex lg:flex-between">
           <input 
             name="search"
@@ -80,8 +102,8 @@ const getSideOffset = () => {
               </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger  className="flex-between gap-3 cursor-pointer">
-                  <UserPhoto className="size-10 rounded-full"/>
-                  <p className="hidden lg:block text-sm font-medium text-neutral-900">{ name }</p>
+                  { userProfileImage ? userProfileImage : info }
+                  <p className="hidden lg:block text-sm font-medium text-neutral-900">{ data.name }</p>
                 </DropdownMenuTrigger >
                 <DropdownMenuContent sideOffset={getSideOffset()}>
                   <DropdownMenuItem asChild>

@@ -24,7 +24,7 @@ export const fetchUserData = createAsyncThunk("users/fetchUserData", async (arg,
 
 type PreDataProps = GetUserDataType & {
   headline: string;
-  avatarUrl?: string;
+  avatarUrl?: string | File;
 };
 
 type DataProps = Omit<PreDataProps, 'password'>;

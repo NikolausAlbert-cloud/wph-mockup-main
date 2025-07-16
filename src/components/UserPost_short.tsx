@@ -15,7 +15,7 @@ interface BaseUserPostShortProps {
 
 type UserPostShort_PublicPost = BaseUserPostShortProps & {
   source: "publicPost";
-  data: { pages: { data: PublicPostResponse_dataProps[] }[] }; 
+  data: { pages: { data: GetPublicPostResponse_dataProps[] }[] }; 
 };
 
 type UserPostShort_UserPost = BaseUserPostShortProps & {
@@ -59,7 +59,6 @@ export const UserPost_short = ({
       {dataSource.map((item: ItemProps, i) => {
         const createDate = formatDate(item.createdAt);
       // const updateDate = formatDate(item.updateAt);
-        console.log("item: ", item)
 
         const mainPostImage = (
           <PostImageHandler

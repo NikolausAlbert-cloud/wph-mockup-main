@@ -13,21 +13,7 @@ export const extractPlainTextFromHtml = (htmlString: string): string => {
   });
 
   const tempDiv = document.createElement("div");
-  tempDiv.innerHTML = cleanHtml;
-
-  // let originalTagName= "p";
-  // let plainTextContent = tempDiv.textContent || "";
-
-  // if (tempDiv.firstElementChild) {
-  //   originalTagName = tempDiv.firstElementChild.tagName.toLowerCase();
-  //   plainTextContent = tempDiv.firstElementChild.textContent || "";
-  // } 
-  // const reconstructedHtml = `<${originalTagName}>${plainTextContent}</${originalTagName}>`;
-
-  // const cleanFinalHtml = DOMPurify.sanitize(reconstructedHtml, {
-  //   ALLOWED_TAGS: [originalTagName],
-  //   ALLOWED_ATTR: []
-  // });
+  tempDiv.innerHTML = htmlString;
 
   return tempDiv.textContent || "";
 };

@@ -1,6 +1,5 @@
 import { changeProfile } from "@/api/changeProfile";
 import Camera from "@/assets/images/camera.svg";
-import UserPhoto from "@/assets/images/logo.svg";
 
 import {
   Dialog,
@@ -16,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { FormInput } from "../FormInput";
+import { PostImageHandler } from "../Posts/PostImageHandler";
 
 type UserProfileDialogProps = {
   isOpenDialog: boolean;
@@ -109,6 +109,16 @@ export const UserProfile_dialog = ({
       setLoading(false);
     }
   };
+
+  const profileImage = (
+    <PostImageHandler 
+      name={dialogFormData.name}
+      component="userprofiledialog"
+      imageUrl={avatarPreview}
+      altText="Profile Image"
+      className="size-20"
+    />
+  )
   
   return (
     <div>
@@ -131,11 +141,7 @@ export const UserProfile_dialog = ({
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
               <div className="relative flex-center cursor-pointer">
                 <label htmlFor="avatar-upload" className="cursor-pointer">
-                {avatarPreview ? (
-                  <img src={avatarPreview} alt="User Avatar" className="size-20 rounded-full object-cover" />
-                ) : (
-                  <UserPhoto className="size-20" />
-                )}
+                { profileImage }
                 <Camera className="absolute left-1/2 translate-x-[58%] top-1/2 translate-y-[87.5%] size-6" />
                 </label>
                 <input

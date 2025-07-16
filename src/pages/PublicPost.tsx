@@ -7,7 +7,8 @@ import useWindowDimensions from '@/hooks/useWindowDimensions';
 
 export const PublicPost = () => {
   const { width } = useWindowDimensions();
-  const breakpoint = 1173;
+  const breakpoint1 = 1173;
+  const breakpoint2 = 692;
   const { 
     data:dataPublicPost, isLoading:publicPostIsLoading, isError:publicPostIsError, error:publicPostError, hasNextPage:publicPostHasNextPage, isFetchingNextPage:publicPostIsFetchingNextPage, fetchNextPage:publicPostFetchNextPage 
   } = useInfinitePublicPost();
@@ -24,7 +25,7 @@ export const PublicPost = () => {
 
   return (
     <div 
-      className={`w-full max-w-300 px-4 md:mx-auto mt-22 md:mt-32 flex flex-col-reverse ${width > breakpoint && "flex-row"}`}
+      className={`w-full max-w-300 px-4 md:mx-auto mt-22 md:mt-32 flex flex-col-reverse ${width > breakpoint1 && "flex-row"}`}
     >
       {publicPostIsLoading ? (
         <p>Loading public posts...</p>
@@ -35,28 +36,28 @@ export const PublicPost = () => {
       ) : (
         <>
           <div 
-            className={`${width > breakpoint && "max-w-213.5 border-r-1 border-neutral-300 pr-12"} flex flex-col w-full`}
+            className={`${width > breakpoint1 && "max-w-213.5 border-r-1 border-neutral-300 pr-12"} flex flex-col w-full`}
           >
             <h1 className="text-xl font-bold text-neutral-900">Recommended for you</h1>
-            <UserPost_short data={dataPublicPost} source="publicPost" breakpoint={breakpoint}/>
+            <UserPost_short data={dataPublicPost} source="publicPost" breakpoint={breakpoint1}/>
             <div ref={observerRef} >
               {publicPostIsFetchingNextPage && <p>Loading more posts...</p>}
               {!publicPostHasNextPage && !publicPostIsFetchingNextPage && <p>You've reached the end!</p>}
             </div>
           </div>
-          <div className={`flex flex-col ${width > breakpoint && "pl-12"} w-full md:max-w-86`}>
-            <div className="w-full bg-red-50">
-              <h1 className="text-xl font-bold text-neutral-900">Most Like</h1>
-              {mostLikePostIsLoading ? (
-                <p>Loading most liked posts...</p>
-              ) : mostLikePostIsError ? (
-                <p>Error loading most liked posts: {mostLikePostError?.message || 'Unknown error'}</p>
-              ) : (!dataMostLikePost || !dataMostLikePost.pages || dataMostLikePost.pages.length === 0) ? (
-                  <p>No most liked posts found (or data structure issue).</p>
-              ) : (
-                <MostLikePost data={dataMostLikePost} />
-              )}
-            </div>
+          <div className={`${width > breakpoint1 ? "pl-12 max-w-86" : "w-full"} `}>
+            <h1 className="text-xl font-bold text-neutral-900">Most Like</h1>
+            {mostLikePostIsLoading ? (
+              <p>Loading most liked posts...</p>
+            ) : mostLikePostIsError ? (
+              <p>Error loading most liked posts: {mostLikePostError?.message || 'Unknown error'}</p>
+            ) : (!dataMostLikePost || !dataMostLikePost.pages || dataMostLikePost.pages.length === 0) ? (
+                <p>No most liked posts found (or data structure issue).</p>
+            ) : (
+              <div className={`flex w-full ${width > breakpoint1 || width < breakpoint2 ? "flex-col" : "flex-row"}`}>
+                <MostLikePost data={dataMostLikePost} breakpoint1={breakpoint1} breakpoint2={breakpoint2} />
+              </div>
+            )}
           </div>
         </>
       )}
