@@ -16,8 +16,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "@/redux/store"
 import { PostImageHandler } from "../Posts/PostImageHandler"
 import { fetchUserData } from "@/redux/slices/getUserDataSlice"
-import { infiniteSearchPost } from "@/hooks/useInfiniteSearchPost"
-import { saveSearchPost } from "@/redux/slices/searchPostSlice"
+import { saveSearchPost, searchPostThunk } from "@/redux/slices/searchPostSlice"
 
 export const Navbar = () => {
   const dispatch:AppDispatch = useDispatch();
@@ -61,15 +60,18 @@ export const Navbar = () => {
     setSearchTerm(e.target.value);
   };
 
+  const handleInputClick = () => {
+    dispatch(saveSearchPost(searchTerm));
+    dispatch(searchPostThunk(searchTerm));
+    navigate("/search");
+  };
+
   const handleInputKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
+      dispatch(saveSearchPost(searchTerm));
+      dispatch(searchPostThunk(searchTerm))
       navigate("/search");
-
-      const inputElement = e.target as HTMLInputElement;
-      const term = inputElement.value;
-      const data = infiniteSearchPost(term);
-      dispatch(saveSearchPost(data))
     }
   };
 
@@ -107,7 +109,9 @@ export const Navbar = () => {
             onChange={handleInputChange}
             onKeyDown={handleInputKeyDown}
           />
-          <Search className="absolute top-1/2 translate-y-[-50%] right-1/2 translate-x-[-600%] size-6 cursor-pointer text-neutral-500" />
+          <Link to="/search" onClick={handleInputClick}>
+            <Search className="absolute top-1/2 translate-y-[-50%] right-1/2 translate-x-[-600%] size-6 cursor-pointer text-neutral-500" />
+          </Link>
         </div>
 
         { isToken

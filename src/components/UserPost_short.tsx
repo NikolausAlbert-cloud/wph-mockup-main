@@ -19,7 +19,7 @@ type UserPostShort_PublicPost = BaseUserPostShortProps & {
 };
 
 type UserPostShort_UserPost = BaseUserPostShortProps & {
-  source: "userPost";
+  source: "userPost" | "searchPost";
   data: { data: GetUserPostsParams_dataProps[] };
 };
 
@@ -40,6 +40,10 @@ export const UserPost_short = ({
       break;
     case "publicPost":
       dataSource = data.pages[0].data;
+      containerClassName = "h-66.5 md:h-74.5";
+      break;
+    case "searchPost":
+      dataSource = data;
       containerClassName = "h-66.5 md:h-74.5";
       break;
     default:
@@ -69,10 +73,12 @@ export const UserPost_short = ({
           />
         );
 
+        const postBlogTypePublic = ["publicPost", "searchPost"];
+
         return (
           <div 
             key={item.id} 
-            className={`${containerClassName} w-full flex py-4 md:py-5 border-neutral-300 ${source === "publicPost" && i === 0 ? "" : "border-t-[1px]"}`}
+            className={`${containerClassName} w-full flex py-4 md:py-5 border-neutral-300 ${postBlogTypePublic.includes(source) && i === 0 ? "" : "border-t-[1px]"}`}
           >
             <div className={`w-full flex justify-between gap-4 md:gap-6 h-55 md:h-64.5`}>
               {width > 640 && mainPostImage}
@@ -120,7 +126,7 @@ export const UserPost_short = ({
                   })}
                   </div>
                 </React.Fragment> 
-                ) :  source === "publicPost" && (
+                ) :  postBlogTypePublic.includes(source) && (
                 <React.Fragment>
                   <div className="flex flex-row items-center gap-3">
                     <div className="flex-between gap-2">

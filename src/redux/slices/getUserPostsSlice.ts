@@ -1,9 +1,9 @@
-import { getUserPosts, getUserPostsParams, getUserPostsParams_dataProps, getUserPostsResponse } from "@/api/posts";
+import { getUserPosts, GetUserPostsParams, GetUserPostsParams_dataProps, GetUserPostsResponse } from "@/api/posts";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit"
 
-export const fetchUserPosts = createAsyncThunk ("users/fetchUserPosts", async ({ payload }: getUserPostsParams, {rejectWithValue}) => {
+export const fetchUserPosts = createAsyncThunk ("users/fetchUserPosts", async ({ payload }: GetUserPostsParams, {rejectWithValue}) => {
   try {
-    const response: getUserPostsResponse = await getUserPosts({ payload });
+    const response: GetUserPostsResponse = await getUserPosts({ payload });
     return response;
   } catch (err: any) {
     return rejectWithValue(err.response?.data?.message || err.message || "Failed to fetch user posts.")
@@ -11,7 +11,7 @@ export const fetchUserPosts = createAsyncThunk ("users/fetchUserPosts", async ({
 });
 
 type InitialState_data = {
-  data: getUserPostsParams_dataProps[],
+  data: GetUserPostsParams_dataProps[],
   total: number,
   page: number,
   lastPage: number
