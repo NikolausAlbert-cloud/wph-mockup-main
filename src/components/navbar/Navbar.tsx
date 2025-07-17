@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { Button } from "../ui/button"
 import Logo from "@/assets/images/logo.svg"
 import { Search, Menu, PencilLine, User, LogOut } from "lucide-react"
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet"
 import {
   DropdownMenu,
@@ -14,14 +14,16 @@ import useWindowDimensions from "@/hooks/useWindowDimensions"
 import { logout } from "@/redux/slices/authSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "@/redux/store"
-import { useTitleCase } from "@/hooks/useTitleCase"
 import { PostImageHandler } from "../Posts/PostImageHandler"
 import { fetchUserData } from "@/redux/slices/getUserDataSlice"
+import { infiniteSearchPost } from "@/hooks/useInfiniteSearchPost"
+import { saveSearchPost } from "@/redux/slices/searchPostSlice"
 
 export const Navbar = () => {
   const dispatch:AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [ isToken, setIsToken ] = useState(false);
+  const [ searchTerm, setSearchTerm ] = useState("");
   const { width } = useWindowDimensions();
   const { fetchUserData_status, data, error } = useSelector((state:RootState) => state.user);
 
@@ -55,6 +57,22 @@ export const Navbar = () => {
     navigate("/auth/login");
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleInputKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      navigate("/search");
+
+      const inputElement = e.target as HTMLInputElement;
+      const term = inputElement.value;
+      const data = infiniteSearchPost(term);
+      dispatch(saveSearchPost(data))
+    }
+  };
+
   const userProfileImage = (
     <PostImageHandler 
       component="navbar"
@@ -86,6 +104,8 @@ export const Navbar = () => {
             type="search" 
             placeholder="Search" 
             className="h-12 w-93.25 border border-neutral-300 rounded-xl pl-12 text-sm font-regular text-neutral-500"  
+            onChange={handleInputChange}
+            onKeyDown={handleInputKeyDown}
           />
           <Search className="absolute top-1/2 translate-y-[-50%] right-1/2 translate-x-[-600%] size-6 cursor-pointer text-neutral-500" />
         </div>
