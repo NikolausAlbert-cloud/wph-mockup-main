@@ -14,7 +14,12 @@ export const SearchPost = () => {
     <div className="max-md:mx-4 mt-20 md:mt-32 md:ml-30 md:max-w-202">
       <SearchBar className="max-w-94 md:hidden pb-4" />
       { data.length === 0 ? (
-        <Post_empty />
+        <Post_empty 
+          p1="No results found"
+          p2="Try using different keywords"
+          buttonTitle="Back to Home"
+          buttonLink="/"
+        />
       ) : (
         <>
           <h1 className="text-2xl font-bold">{`Result for "${ userInput }"`}</h1>

@@ -13,6 +13,7 @@ import { UserPostBlog } from './pages/UserPostBlog';
 import { useAuth } from './hooks/useAuth';
 import { PublicPost } from './pages/PublicPost';
 import { SearchPost } from './pages/SearchPost';
+import { PostDetail } from './pages/PostDetail';
 
 const App = () => {
   return (
@@ -53,6 +54,7 @@ const AppContent = () => {
         <Route path="/userProfile" element={<ProtectedRoute><UserProfile_page /></ProtectedRoute>} />
         <Route path="/posts" element={<Posts />} />
         <Route path="/posts/my-posts" element={<ProtectedRoute><UserPostBlog /></ProtectedRoute>} />
+        <Route path="/posts/detail/:id" element={<PostDetail />} />
         <Route path="/search" element={<SearchPost />} />
         <Route path="/" element={<PublicPost />} />
         {/* <Route path="*" element={<NotFound />} /> */}

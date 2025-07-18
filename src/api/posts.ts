@@ -135,10 +135,15 @@ const getMostLikePosts = async (page: number, limit: number): Promise<GetMostLik
   return response.data;
 };
 
-const searchPosts = async (query: string, page: number, limit: number): Promise<GetUserPostsParams> => {
+const searchPosts = async (query: string, page: number, limit: number): Promise<GetUserPostsResponse> => {
   const response = await customAxios.get(`posts/search?query=${query}&limit=${limit}&page=${page}`);
   return response.data;
 };
+
+const getPostDetail = async (id: number): Promise<GetUserPostsResponse> => {
+  const response = await customAxios.get(`posts/${id}`);
+  return response.data;
+}
 
 export type {
   GetUserPostsParams_dataProps,
@@ -156,4 +161,5 @@ export {
   getPublicPost,
   getMostLikePosts,
   searchPosts,
+  getPostDetail,
 }

@@ -100,7 +100,12 @@ export const UserProfile_page = () => {
           <p className="text-red-500">{ post_error }</p>
         ) : 
         post_data.total <= 0 ? (
-          <Post_empty />
+          <Post_empty 
+            p1="Your writing journey starts here"
+            p2="No posts yet, but every great writer starts with the first one."
+            buttonTitle="Write Post"
+            buttonLink="/posts"
+          />
         ) : (
         <div className="w-full flex-center flex-col px-4">
           <div className="w-full flex flex-col-reverse md:justify-between md:items-center md:flex-row pb-5">

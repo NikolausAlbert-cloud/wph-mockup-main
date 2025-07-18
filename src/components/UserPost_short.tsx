@@ -6,6 +6,7 @@ import { formatDate } from "@/utils/formatDate";
 import { MessageSquare, ThumbsUp } from "lucide-react";
 import React from "react";
 import { PostImageHandler } from "./Posts/PostImageHandler";
+import { Link } from "react-router-dom";
 
 interface BaseUserPostShortProps {
   status?: string;
@@ -55,7 +56,7 @@ export const UserPost_short = ({
   }
 
   if (status === "failed") {
-    return <p>Error in fetching user posts data</p>
+    return <p>Error: {error?.message || "Error in fetching user posts data"}</p>
   }
 
   return (
@@ -76,7 +77,8 @@ export const UserPost_short = ({
         const postBlogTypePublic = ["publicPost", "searchPost"];
 
         return (
-          <div 
+          <Link
+            to={`/posts/detail/${item.id}`} 
             key={item.id} 
             className={`${containerClassName} w-full flex py-4 md:py-5 border-neutral-300 ${postBlogTypePublic.includes(source) && i === 0 ? "" : "border-t-[1px]"}`}
           >
@@ -154,7 +156,7 @@ export const UserPost_short = ({
                 )}
               </div>
             </div>
-          </div>
+          </Link>
         )
       })}
     </>
