@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
-
 import { userProfileTab_data } from '@/constants/userProfileTab_data';
-import { UserProfilePost_empty } from '@/components/userProfile/UserProfilePost_empty';
+import { Post_empty } from '@/components/Posts/Post_empty';
 import { UserProfilePost_changePass } from '@/components/userProfile/UserProfilePost_changePass';
 import { fetchUserData } from '@/redux/slices/getUserDataSlice';
 import { UserProfile_dialog } from '@/components/userProfile/userProfile_dialog';
@@ -101,7 +100,7 @@ export const UserProfile_page = () => {
           <p className="text-red-500">{ post_error }</p>
         ) : 
         post_data.total <= 0 ? (
-          <UserProfilePost_empty />
+          <Post_empty />
         ) : (
         <div className="w-full flex-center flex-col px-4">
           <div className="w-full flex flex-col-reverse md:justify-between md:items-center md:flex-row pb-5">

@@ -3,7 +3,7 @@ import { Button } from '../ui/button';
 import { PencilLine } from 'lucide-react';
 import { Link } from "react-router-dom";
 
-export const UserProfilePost_empty = () => {
+export const Post_empty = () => {
   return (
     <div className="flex-center flex-col gap-6 py-16.5 md:py-32.5">
       <NoResult className="w-29.5 h-34"/>

@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { Button } from "../ui/button"
 import Logo from "@/assets/images/logo.svg"
 import { Search, Menu, PencilLine, User, LogOut } from "lucide-react"
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet"
 import {
   DropdownMenu,
@@ -16,13 +16,13 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "@/redux/store"
 import { PostImageHandler } from "../Posts/PostImageHandler"
 import { fetchUserData } from "@/redux/slices/getUserDataSlice"
-import { saveSearchPost, searchPostThunk } from "@/redux/slices/searchPostSlice"
+import { SearchBar } from "./SearchBar"
 
 export const Navbar = () => {
   const dispatch:AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [ isToken, setIsToken ] = useState(false);
-  const [ searchTerm, setSearchTerm ] = useState("");
+
   const { width } = useWindowDimensions();
   const { fetchUserData_status, data, error } = useSelector((state:RootState) => state.user);
 
@@ -56,25 +56,6 @@ export const Navbar = () => {
     navigate("/auth/login");
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleInputClick = () => {
-    dispatch(saveSearchPost(searchTerm));
-    dispatch(searchPostThunk(searchTerm));
-    navigate("/search");
-  };
-
-  const handleInputKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      dispatch(saveSearchPost(searchTerm));
-      dispatch(searchPostThunk(searchTerm))
-      navigate("/search");
-    }
-  };
-
   const userProfileImage = (
     <PostImageHandler 
       component="navbar"
@@ -100,20 +81,7 @@ export const Navbar = () => {
           <Logo />
           <p className="text-neutral-950 font-semibold text-md md:text-xl ">Your Logo</p>
         </Link>
-        <div className="relative hidden lg:flex lg:flex-between">
-          <input 
-            name="search"
-            type="search" 
-            placeholder="Search" 
-            className="h-12 w-93.25 border border-neutral-300 rounded-xl pl-12 text-sm font-regular text-neutral-500"  
-            onChange={handleInputChange}
-            onKeyDown={handleInputKeyDown}
-          />
-          <Link to="/search" onClick={handleInputClick}>
-            <Search className="absolute top-1/2 translate-y-[-50%] right-1/2 translate-x-[-600%] size-6 cursor-pointer text-neutral-500" />
-          </Link>
-        </div>
-
+        <SearchBar className="hidden md:max-w-94" />
         { isToken
           ? (
             <div className="flex-between gap-6">
