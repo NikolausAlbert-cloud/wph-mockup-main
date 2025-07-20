@@ -12,7 +12,7 @@ export const fetchPostDetail = createAsyncThunk("posts/fetchPostDetail", async (
 
 type initialStateProps = {
   fetchPostDetail_status: "idle" | "loading" | "succeeded" | "failed";
-  data: GetUserPostsParams_dataProps[];
+  data: GetUserPostsParams_dataProps;
   error: string | null;
 };
 

@@ -1,6 +1,10 @@
 import { GetMostLikePostsResponse_dataProps } from '@/api/posts'
 import useWindowDimensions from '@/hooks/useWindowDimensions';
+import { fetchPostDetail } from '@/redux/slices/getPostDetailSlice';
+import { AppDispatch } from '@/redux/store';
 import { MessageSquare, ThumbsUp } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 type MostLikePostProps = {
   data: any;
@@ -11,12 +15,15 @@ type MostLikePostProps = {
 export const MostLikePost = ({ data, breakpoint1, breakpoint2 }:MostLikePostProps) => {
   const { width } = useWindowDimensions();
   const postToDisplay = data.pages[0].data.slice(0, 3);
+  const dispatch:AppDispatch = useDispatch();
 
   return (
     <>
       {postToDisplay.map((item: GetMostLikePostsResponse_dataProps, i:number) => {
         return (
-          <div 
+          <Link 
+            to={`/posts/detail/${item.id}`} 
+            onClick={() => dispatch(fetchPostDetail(item.id))}
             key={item.id} 
             className={`flex flex-col justify-between gap-4 max-h-51 w-full ${width > breakpoint1 || width < breakpoint2 ? "border-t-neutral-300 border-t-[1px] py-5" : "border-l-neutral-300 border-l-[1px] px-5 my-5"} ${i === 0 && "border-none"}`}
           >
@@ -38,7 +45,7 @@ export const MostLikePost = ({ data, breakpoint1, breakpoint2 }:MostLikePostProp
                 <p>{ item.comments }</p>
               </div>
             </div>
-          </div>
+          </Link>
         )
       })}
     </>

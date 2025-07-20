@@ -1,18 +1,16 @@
 import { GetUserPostsParams_dataProps } from '@/api/posts'
+import { Comments } from '@/components/Posts/Comments';
 import { Post_empty } from '@/components/Posts/Post_empty';
 import { PostImageHandler } from '@/components/Posts/PostImageHandler';
 import { RootState } from '@/redux/store';
 import { formatDate } from '@/utils/formatDate';
-import { Item } from '@radix-ui/react-dropdown-menu';
 import { MessageSquare, ThumbsUp } from 'lucide-react';
 import { useSelector } from 'react-redux';
 
 export const PostDetail = () => {
   const { data, fetchPostDetail_status, error }: {
-    data: GetUserPostsParams_dataProps[], fetchPostDetail_status: "idle" | "loading" | "succeeded" | "failed", error: string | null
+    data:GetUserPostsParams_dataProps, fetchPostDetail_status: "idle" | "loading" | "succeeded" | "failed", error: string | null
   } = useSelector((state: RootState) => state.postDetail);
-
-  console.log("PostDetail data: ", data)
 
   if (fetchPostDetail_status === "loading") {
     return (
@@ -22,7 +20,7 @@ export const PostDetail = () => {
     return (
       <p>Error loading posts: {error?.message || 'Unknown error'}</p>
     )
-  } else if (!data || data.length === 0) {
+  } else if (!data) {
     return (
       <Post_empty 
         p1="No post found" 
@@ -33,71 +31,71 @@ export const PostDetail = () => {
     )
   }
 
-  {data.map((item: GetUserPostsParams_dataProps, i) => {
-    const createDate = formatDate(item.createdAt);
+    const createDate = formatDate(data.createdAt);
     
     const mainPostImage = (
       <PostImageHandler
         component="postblog"
-        imageUrl={item.imageUrl}
+        imageUrl={data.imageUrl}
         altText="Post Image"
-        className="w-full max-w-85 h-full flex-none py-2"
+        className="w-full h-full max-h-152 rounded-sm"
+        imgSize="none"
       />
     );
 
-    return (
-      <div
-        key={item.id} 
-        className={` w-full flex py-4 md:py-5 border-neutral-300`}
+  return (
+    <div 
+      key={data.id}
+      className={`mx-auto w-full max-w-200 flex flex-col gap-4 mt-32`}
+    >
+      <h1 
+        className="text-md md:text-xl font-semibold  md:font-bold text-neutral-900"
       >
-        <div className={`w-full flex justify-between gap-4 md:gap-6 h-55 md:h-64.5`}>
-          <div 
-            className={`w-full py-2 flex flex-col gap-2 justify-between`}
-          >
-            <h1 className="max-h:15 md:max-h-17 truncate text-md md:text-xl font-semibold flex md:font-bold text-neutral-900">
-              { item.title }
-            </h1>
-            <div className="flex flex-row gap-2">
-              {item.tags.map((tag: string) => {
-                return (
-                  <p 
-                    key={`${item.id}-${tag}`} 
-                    className="text-xs font-regular text-neutral-900 h-7 border-1 border-neutral-300 rounded-md px-2"
-                  >
-                    { tag }
-                  </p>
-                )
-              })}
-            </div>
-            <div className="flex flex-row items-center gap-3">
-              <div className="flex-between gap-2">
-                <div className="size-10 rounded-full bg-primary-200 text-sm overflow-hidden text-ellipsis flex-center">
-                  {item.author.name}
-                </div>
-                <p className="text-sm font-medium">{ item.author.name }</p>
-              </div>
-              <div className="size-1 bg-neutral-400 rounded-full"></div>
-              <div className="text-sm font-regular text-neutral-600">
-                {createDate.date}
-              </div>
-            </div>
-            <div className="flex flex-row gap-5 text-sm font-regular max-w-26.5">
-              <div className="flex-between gap-1 max-w-11">
-                <ThumbsUp className="size-5 text-neutral-600" />
-                <p>{ item.likes }</p>
-              </div>
-              <div className="flex-between gap-1 max-w-11">
-                <MessageSquare className="size-5 text-neutral-600" />
-                <p>{ item.comments }</p>
-              </div>
-            </div>
-            <div>{mainPostImage}</div>
-            <div>
-              {item.content}
-            </div>
+        { data.title }
+      </h1>
+      <div className="flex flex-row gap-2">
+        {data.tags.map((tag: string) => {
+          return (
+            <p 
+              key={`${data.id}-${tag}`} 
+              className="text-xs font-regular text-neutral-900 h-7 border-1 border-neutral-300 rounded-md px-2"
+            >
+              { tag }
+            </p>
+          )
+        })}
+      </div>
+      <div className="pb-4 border-b-1 border-b-neutral-300 flex flex-row items-center gap-3">
+        <div className="flex-between gap-2">
+          <div className="size-10 rounded-full bg-primary-200 text-sm overflow-hidden text-ellipsis flex-center">
+            {data.author.name}
           </div>
+          <p className="text-sm font-medium">{ data.author.name }</p>
+        </div>
+        <div className="size-1 bg-neutral-400 rounded-full"></div>
+        <div className="text-sm font-regular text-neutral-600">
+          {createDate.date}
         </div>
       </div>
-    )
-  })}
+      <div 
+        className="pb-4 border-b-1 border-b-neutral-300 flex flex-row gap-5 text-sm font-regular"
+      >
+        <div className="flex-between gap-1 max-w-11">
+          <ThumbsUp className="size-5 text-neutral-600" />
+          <p>{ data.likes }</p>
+        </div>
+        <div className="flex-between gap-1 max-w-11">
+          <MessageSquare className="size-5 text-neutral-600" />
+          <p>{ data.comments }</p>
+        </div>
+      </div>
+      <>
+        {mainPostImage}
+      </>
+      <div className="pb-4 border-b-neutral-300">
+        {data.content}
+      </div>
+      <Comments />
+    </div>
+  )
 };

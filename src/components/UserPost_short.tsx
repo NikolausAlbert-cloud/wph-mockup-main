@@ -7,6 +7,9 @@ import { MessageSquare, ThumbsUp } from "lucide-react";
 import React from "react";
 import { PostImageHandler } from "./Posts/PostImageHandler";
 import { Link } from "react-router-dom";
+import { AppDispatch } from "@/redux/store";
+import { useDispatch } from "react-redux";
+import { fetchPostDetail } from "@/redux/slices/getPostDetailSlice";
 
 interface BaseUserPostShortProps {
   status?: string;
@@ -32,6 +35,7 @@ export const UserPost_short = ({
 }: UserPost_shortProps) => {
   const { width } = useWindowDimensions();
   let dataSource = [];
+  const dispatch:AppDispatch = useDispatch();
 
   let containerClassName = "";
   switch (source) {
@@ -79,6 +83,7 @@ export const UserPost_short = ({
         return (
           <Link
             to={`/posts/detail/${item.id}`} 
+            onClick={() => dispatch(fetchPostDetail(item.id))}
             key={item.id} 
             className={`${containerClassName} w-full flex py-4 md:py-5 border-neutral-300 ${postBlogTypePublic.includes(source) && i === 0 ? "" : "border-t-[1px]"}`}
           >
