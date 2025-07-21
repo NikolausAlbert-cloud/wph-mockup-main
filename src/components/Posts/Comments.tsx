@@ -2,10 +2,15 @@ import { fetchUserData } from "@/redux/slices/getUserDataSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { PostImageHandler } from "./PostImageHandler";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "../ui/button";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CommentFormInput, CommentSchema } from "@/utils/validation";
+import { useAddComment } from "@/hooks/useAddComment";
 
-export const Comments = () => {
+export const Comments = ({postId}: {postId: number}) => {
+  const addCommentMutation = useAddComment();
   const dispatch: AppDispatch = useDispatch()
   const { fetchUserData_status, data, error } = useSelector((state:RootState) => state.user);
 
@@ -14,6 +19,23 @@ export const Comments = () => {
       dispatch(fetchUserData())
     }
   }, [dispatch, fetchUserData_status]);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting }
+  } = useForm<CommentFormInput>({
+    resolver: zodResolver(CommentSchema),
+    defaultValues: {
+      comment: ""
+    }
+  })
+
+  const onSubmit: SubmitHandler<CommentFormInput> = async (data) => {
+     addCommentMutation.mutate(data.comment, postId)
+     reset()
+  }
 
   const userProfileImage = (
     <PostImageHandler 
@@ -44,17 +66,17 @@ export const Comments = () => {
           { data.name }
         </p>
       </div >
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        { errors && <p className="text-red-500 text-xs">{ errors["comment"]?.message }</p>}
         <label className="text-sm font-semibold">Give your Comments</label>
         <textarea 
-          name="comment" 
-          id="comment"
+          {...register("comment")}
           placeholder="Enter your comment"
           className="w-full min-h-35 border-1 border-neutral-300 rounded-md py-2 px-4" 
         />
         <div className="float-end">
-          <Button className="w-full md:w-51 h-12">
-            Send
+          <Button className="w-full md:w-51 h-12" disabled={isSubmitting}>
+            { isSubmitting ? "Sending..." : "Send" }
           </Button>
         </div>
       </form>

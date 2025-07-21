@@ -78,6 +78,12 @@ export const PostsSchema = z.object({
   tags: z.string().min(1, { message: "Error Text Helper" }).optional(),
 })
 
+export const CommentSchema = z.object({
+  comment: z.string()
+    .min(2, { message: "Minimum 2 character required" })
+    .max(200, { message: "Maximum 200 characters allowed" }),
+})
+
 export type SignInFormResponse = {
   token: string;
 }
@@ -104,3 +110,4 @@ export type GetUserDataType = Omit<User, "confirmpassword">;
 export type ChangePasswordData = z.infer<typeof ChangePasswordSchema>;
 export type UserProfileDialogData = z.infer<typeof UserProfileDialogSchema>;
 export type PostsFormInput = z.infer<typeof PostsSchema>;
+export type CommentFormInput = z.infer<typeof CommentSchema>;

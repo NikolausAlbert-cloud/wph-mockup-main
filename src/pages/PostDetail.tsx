@@ -95,7 +95,7 @@ export const PostDetail = () => {
       <div className="pb-4 border-b-neutral-300">
         {data.content}
       </div>
-      <Comments />
+      <Comments postId={data.id} />
     </div>
   )
 };
