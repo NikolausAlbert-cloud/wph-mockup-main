@@ -4,24 +4,26 @@ type CommentProps = {
   id: number,
   content: string,
   author: {
-    id: number,
+    id?: number,
     name: string,
-    email: string
+    email?: string
   },
   post: number,
   createdAt: string
 };
 
-type NewCOmmentProps = {
-  comment: string
-};
+type NewCommentProps = {
+  payload: {
+    comment: string,
+    postId: number
+  }};
 
-const postComment = async (comment: NewCOmmentProps, postId: number): Promise<CommentProps> => {
+const postComment = async ({ payload }: NewCommentProps): Promise<CommentProps> => {
   try {
-    const response = await customAxios.post(`/comments/${postId}`, comment);
+    const response = await customAxios.post(`/comments/${payload.postId}`, payload.comment);
     return response.data;
   } catch (err) {
-    console.err(err);
+    console.error(err);
     return Promise.reject(err);
   };
 };
@@ -36,5 +38,5 @@ const getComment = async (postId: number): Promise<CommentProps[]> => {
   }
 }
 
-export type { CommentProps };
+export type { CommentProps, NewCommentProps };
 export { postComment, getComment };

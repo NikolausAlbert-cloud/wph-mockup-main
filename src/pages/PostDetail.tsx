@@ -1,5 +1,6 @@
 import { GetUserPostsParams_dataProps } from '@/api/posts'
 import { Comments } from '@/components/Posts/Comments';
+import { CommentsBlog } from '@/components/Posts/CommentsBlog';
 import { Post_empty } from '@/components/Posts/Post_empty';
 import { PostImageHandler } from '@/components/Posts/PostImageHandler';
 import { RootState } from '@/redux/store';
@@ -96,6 +97,7 @@ export const PostDetail = () => {
         {data.content}
       </div>
       <Comments postId={data.id} />
+      <CommentsBlog postId={data.id} />
     </div>
   )
 };

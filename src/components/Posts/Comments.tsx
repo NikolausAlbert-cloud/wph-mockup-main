@@ -2,7 +2,7 @@ import { fetchUserData } from "@/redux/slices/getUserDataSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { PostImageHandler } from "./PostImageHandler";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Button } from "../ui/button";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
