@@ -2,7 +2,7 @@ import { loginOauth, logout } from '@/redux/slices/authSlice';
 import { RootState } from '@/redux/store';
 import { auth } from '@/utils/firebaseConfig';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
 export const useAuth = () => {
@@ -13,10 +13,9 @@ export const useAuth = () => {
   const loginUser = async (email: string, password: string) => {
     setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword( auth, email, password);
-      const user = userCredential.user;
+      const userCredential = await signInWithEmailAndPassword( auth, email, password );
+      const { user } = userCredential;
       const token = await user.getIdToken();
-      console.log("token: ", token);
 
       const userEmail = user.email ?? "";
       localStorage.setItem("token", token);

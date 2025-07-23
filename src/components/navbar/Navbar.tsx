@@ -62,8 +62,7 @@ export const Navbar = () => {
       imageUrl={data.avatarUrl}
       altText="User Image"
       name={data.name}
-      className="rounded-full"
-      imgSize="size-10"
+      className="size-10 rounded-full"
     />
   )
 

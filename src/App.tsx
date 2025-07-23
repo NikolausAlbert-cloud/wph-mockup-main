@@ -4,7 +4,6 @@ import { SignUpForm_page } from './pages/SignUpForm_page';
 import { SignInForm_page } from './pages/SignInForm_page';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
-import { Home } from './pages/Home';
 import { Navbar } from './components/navbar/Navbar';
 import { UserProfile_page } from './pages/UserProfile_page';
 import { Posts } from './pages/Posts';
@@ -49,16 +48,19 @@ const AppContent = () => {
       {showNavbar && !showNavbarPosts &&<Navbar />}
       {showNavbarPosts && <NavbarPosts />}
       <Routes>
+        <Route path="/" element={<PublicPost />} />
         <Route path="/auth/register" element={<SignUpForm_page />} />
         <Route path="/auth/login" element={<SignInForm_page />} />
-        <Route path="/userProfile" element={<ProtectedRoute><UserProfile_page /></ProtectedRoute>} />
         <Route path="/posts" element={<Posts />} />
-        <Route path="/posts/my-posts" element={<ProtectedRoute><UserPostBlog /></ProtectedRoute>} />
-        <Route path="/posts/detail/:id" element={<PostDetail />} />
         <Route path="/search" element={<SearchPost />} />
-        <Route path="/" element={<PublicPost />} />
+        <Route path="/posts/detail/:id" element={<PostDetail />} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/userProfile" element={<UserProfile_page />} />
+          <Route path="/posts/my-posts" element={<UserPostBlog />} />   
+        </Route>
+        
         {/* <Route path="*" element={<NotFound />} /> */}
-        {/* Add more routes as needed */}
       </Routes>
     </>
 

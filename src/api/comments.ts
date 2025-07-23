@@ -16,11 +16,14 @@ type NewCommentProps = {
   payload: {
     comment: string,
     postId: number
-  }};
+  }
+};
 
 const postComment = async ({ payload }: NewCommentProps): Promise<CommentProps> => {
   try {
+    console.log("Posting comment:", payload);
     const response = await customAxios.post(`/comments/${payload.postId}`, payload.comment);
+    console.log("Comment posted successfully:", response.data);
     return response.data;
   } catch (err) {
     console.error(err);

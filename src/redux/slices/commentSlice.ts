@@ -1,8 +1,9 @@
 import { CommentProps, getComment, NewCommentProps, postComment } from "@/api/comments";
 import { } from "@/api/posts";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { data } from "react-router-dom";
 
-export const fetchComment = createAsyncThunk("fetchComment", async (postId: number, { rejectWithValue }) => {
+const fetchComment = createAsyncThunk("comments/fetchComment", async (postId: number, { rejectWithValue }) => {
   try {
     const response = await getComment(postId);
     return response;
@@ -11,31 +12,41 @@ export const fetchComment = createAsyncThunk("fetchComment", async (postId: numb
   }
 });
 
+const addComment = createAsyncThunk("comments/addComment", async (payload: NewCommentProps["payload"], {rejectWithValue}) => {
+  try {
+    const response = await postComment({ payload });
+    return response;
+  } catch(err: any) {
+    return rejectWithValue(err.response?.data?.message || err.message || "Failed to add comment.");
+  }
+});
+
 type initialStateProps = {
   fetchComment_status: "idle" | "loading" | "succeeded" | "failed";
   data: CommentProps[];
-  error: string | null;
+  fetchError: string | null;
+  addComment_status: "idle" | "loading" | "succeeded" | "failed";
+  addCommentError: string | null;
 };
 
 const initialState: initialStateProps = {
   fetchComment_status: "idle",
   data: [],
-  error: null,
+  fetchError: null,
+  addComment_status: "idle",
+  addCommentError: null,
 };
 
 const commentSlice = createSlice({
-  name: "fetchComment",
+  name: "comment",
   initialState,
-  reducers: {
-    addComment: (_, action: PayloadAction<NewCommentProps>) => {
-      postComment(action.payload);
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
+      // fechComment
       .addCase(fetchComment.pending, (state) => {
         state.fetchComment_status = "loading";
-        state.error = null;
+        state.fetchError = null;
       })
       .addCase(fetchComment.fulfilled, (state, action:PayloadAction<any>) => {
         state.fetchComment_status = "succeeded";
@@ -43,10 +54,23 @@ const commentSlice = createSlice({
       })
       .addCase(fetchComment.rejected, (state, action) => {
         state.fetchComment_status = "failed";
-        state.error = action.payload as string;
-      });
+        state.fetchError = action.payload as string;
+      })
+      // addComment
+      .addCase(addComment.pending, (state) => {
+        state.addComment_status = "loading";
+        state.addCommentError = null;
+      })
+      .addCase(addComment.fulfilled, (state, action:PayloadAction<any>) => {
+        state.addComment_status = "succeeded";
+        state.data = [action.payload, ...state.data || []];
+      })
+      .addCase(addComment.rejected, (state, action) => {
+        state.addComment_status = "failed";
+        state.addCommentError = action.payload as string;
+      })
   },
 });
 
-export const { addComment } = commentSlice.actions;
+export { fetchComment, addComment };
 export default commentSlice.reducer;
