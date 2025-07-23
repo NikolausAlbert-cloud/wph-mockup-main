@@ -22,16 +22,16 @@ export const fetchUserData = createAsyncThunk("users/fetchUserData", async (arg,
   }
 })
 
-type PreDataProps = GetUserDataType & {
+type PreUserDataProps = GetUserDataType & {
   headline: string;
   avatarUrl?: string | File;
 };
 
-type DataProps = Omit<PreDataProps, 'password'>;
+type UserDataProps = Omit<PreUserDataProps, 'password'>;
 
 type InitialUserStateType = {
   fetchUserData_status: "idle" | "loading" | "succeeded" | "failed";
-  data: DataProps;
+  data: UserDataProps;
   error: string | null;
 }
 
@@ -63,7 +63,7 @@ const getUserDataSlice = createSlice({
         state.fetchUserData_status = "loading";
         state.error = null;
       })
-      .addCase(fetchUserData.fulfilled, (state, action:PayloadAction<DataProps>) => {
+      .addCase(fetchUserData.fulfilled, (state, action:PayloadAction<UserDataProps>) => {
         state.fetchUserData_status = "succeeded";
         state.data = {
           id: action.payload.id,
@@ -80,5 +80,6 @@ const getUserDataSlice = createSlice({
   }
 });
 
+export type { UserDataProps };
 export const { clearUserData } = getUserDataSlice.actions;
 export default getUserDataSlice.reducer;

@@ -1,4 +1,4 @@
-import { getPostDetail, GetUserPostsParams, GetUserPostsParams_dataProps } from "@/api/posts";
+import { getPostDetail, GetUserPostsParams_dataProps } from "@/api/posts";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export const fetchPostDetail = createAsyncThunk("posts/fetchPostDetail", async (id:number, { rejectWithValue }) => {

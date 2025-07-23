@@ -25,7 +25,7 @@ export const PostImageHandler: React.FC<PostImageHandlerProps> = ({ name, compon
     if (imageSrc.includes(component)) {
       return (
         <div 
-          className={`bg-primary-200 rounded-full ${imgSize === "none" ? "" : imgSize ? imgSize : "size-20"} flex-center overflow-hidden ${className}`}
+          className={`bg-primary-200 rounded-full flex-center overflow-hidden ${className}`}
         >
           {name}
         </div>

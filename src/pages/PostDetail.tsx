@@ -40,7 +40,6 @@ export const PostDetail = () => {
         imageUrl={data.imageUrl}
         altText="Post Image"
         className="w-full h-full max-h-152 rounded-sm"
-        imgSize="none"
       />
     );
 

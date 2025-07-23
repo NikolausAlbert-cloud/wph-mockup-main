@@ -17,7 +17,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    loginOauth: (_, action: PayloadAction<{ id: string; email: string; token: string}>) => {
+    loginOauth: (_, action: PayloadAction<{ id: string; email: string; token: string }>) => {
       localStorage.setItem("token", action.payload.token);
     },
     logout: () => {

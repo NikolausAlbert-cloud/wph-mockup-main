@@ -45,7 +45,7 @@ export const useAddComment = () => {
       }
     },
 
-    onSettled: (_, _, payload) => {
+    onSettled: (data, _, payload) => {
       console.log("🔄 Refresh data dari server setelah comment berhasil ditambahkan");
       queryClient.invalidateQueries({ queryKey: ["comments", payload.postId] });
     }

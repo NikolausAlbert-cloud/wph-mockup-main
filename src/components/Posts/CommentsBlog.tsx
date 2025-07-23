@@ -1,41 +1,67 @@
-import { useInfiniteComment } from '@/hooks/useInfiniteComment';
-import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
-import React from 'react'
+import { CommentProps } from '@/api/comments';
+import { UserDataProps } from '@/redux/slices/getUserDataSlice';
+import { AppDispatch, RootState } from '@/redux/store';
+import { formatDate } from '@/utils/formatDate';
+import { useDispatch, useSelector } from 'react-redux';
+import { PostImageHandler } from './PostImageHandler';
+import { useEffect } from 'react';
+import { fetchComment } from '@/redux/slices/commentSlice';
 
 export const CommentsBlog = ({ postId }: {postId: number}) => {
-  const { data, isLoading, isError, error, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteComment(postId);
+  const dispatch: AppDispatch = useDispatch();
+  const { fetchComment_status, data: dataComment, error }: {
+    fetchComment_status: "idle" | "loading" | "succeeded" | "failed",
+    data: CommentProps[],
+    error: string | null
+  } = useSelector((state: RootState) => state.comment);
 
-  const observerRef = useIntersectionObserver(() => {
-    if (hasNextPage && !isFetchingNextPage) {
-      // console.log("Intersection observer triggered, fetching next page.")
-      fetchNextPage();
-    };
-  });
+  const { data: dataUser }: { data: UserDataProps} = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    if (fetchComment_status === "idle") {
+      dispatch(fetchComment(postId));
+    }
+  }, [fetchComment_status, postId, dispatch]);
+
+  const userImage = (
+    <PostImageHandler  
+      name={dataUser?.name}
+      component="commentsblog"
+      imageUrl={dataUser?.avatarUrl}
+      altText={dataUser?.name || "User Image"}
+      className="size-12 rounded-full"
+    />
+  );
 
   return (
     <div>
-      {isLoading ? (
+      {fetchComment_status === "loading" ? (
         <p>Loading comments...</p>
-      ) : isError ? (
+      ) : error ? (
         <p>Error loading comments: {error?.message || 'Unknown error'}</p>
-      ) : (!data || !data.pages || data.pages.length === 0) ? (
-        <p>No comments found (or data structure issue).</p>
+      ) : (!dataComment || !dataComment || dataComment.length === 0) ? (
+        <p>No comments found (or dataComment structure issue).</p>
       ) : (
         <div>
-          {data.pages.map((page, pageIndex) => (
-            <React.Fragment key={pageIndex}>
-              {page.comments.map((comment) => (
-                <div key={comment.id} className="comment">
-                  <p><strong>{comment.author.name}</strong> ({new Date(comment.createdAt).toLocaleDateString()}):</p>
-                  <p>{comment.content}</p>
+          {dataComment.map((item: CommentProps) => (
+            <div 
+              key={item.id} 
+              className="flex flex-col gap-2 py-3 border-t-1 border-t-neutral-300"
+            >
+              <div className="flex flex-row items-center gap-0.5 max-h-13 ">
+                { userImage }
+                <div className="flex flex-col justify-start tex-sm">
+                  <p className="font-semibold text-neutral-900">{item.author.name}</p>
+                  <p className="text-neutral-600">{formatDate(item.createdAt).date}</p>
                 </div>
-              ))}
-            </React.Fragment>
+              </div>
+              <div>
+                <p className="text-sm text-neutral-900">
+                  {item.content}
+                </p>
+              </div>
+            </div>
           ))}
-          <div ref={observerRef}>
-            {isFetchingNextPage && <p>Loading more comments...</p>}
-            {!hasNextPage && !isFetchingNextPage && <p>You've reached the end of comments!</p>}
-          </div>
         </div>
       )}
     </div>
