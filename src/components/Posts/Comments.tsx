@@ -12,7 +12,9 @@ import { addComment } from "@/redux/slices/commentSlice";
 export const Comments = ({postId}: {postId: number}) => {
   const dispatch: AppDispatch = useDispatch()
   const [ isSending, setIsSending ] = useState(false);
-  const { fetchUserData_status, data, error } = useSelector((state:RootState) => state.user);
+  const [ addCommentError, setAddCommentError ] = useState("");
+  const [ addCommentSuccess, setAddCommentSucess ] = useState("");
+  const { fetchUserData_status, data: userData, error } = useSelector((state:RootState) => state.user);
   const { data: commentData, addComment_status } = useSelector((state:RootState) => state.comment);
   
   useEffect(() => {
@@ -42,17 +44,19 @@ export const Comments = ({postId}: {postId: number}) => {
   });
 
   const onSubmit: SubmitHandler<CommentFormInput> = async (data) => {
+    setAddCommentError("");
+    setAddCommentSucess("");
+
     const response = await dispatch(addComment({
     postId,
     comment: data.comment
     }));
 
-    console.log("Comment response:", response);
     if (response.meta.requestStatus === "fulfilled") {
-      console.log("Comment added successfully");
+      setAddCommentSucess("Comment added successfully");
     }
     else {
-      console.error("Failed to add comment:", response.error.message);
+      setAddCommentError("Failed to add new comment");
     }
     reset()
   }
@@ -60,9 +64,9 @@ export const Comments = ({postId}: {postId: number}) => {
   const userProfileImage = (
     <PostImageHandler 
       component="navbar"
-      imageUrl={data.avatarUrl}
+      imageUrl={userData.avatarUrl}
       altText="User Image"
-      name={data.name}
+      name={userData.name}
       className="size-10 rounded-full"
     />
   )
@@ -82,11 +86,13 @@ export const Comments = ({postId}: {postId: number}) => {
       <div className="flex flex-row gap-2.5 items-center h-10">
         { userProfileImage ? userProfileImage : info }
         <p className="hidden md:block text-sm font-semibold text-neutral-900 pl-3">
-          { data.name }
+          { userData.name }
         </p>
       </div >
       <form onSubmit={handleSubmit(onSubmit)}>
         { errors && <p className="text-red-500 text-xs">{ errors["comment"]?.message }</p>}
+        { addCommentError && <p className="text-red-500 text-xs">{ addCommentError }</p>}
+        { addCommentSuccess && <p className="text-primary-300 text-xs">{ addCommentSuccess }</p>}
         <label className="text-sm font-semibold">Give your Comments</label>
         <textarea 
           {...register("comment")}

@@ -23,7 +23,7 @@ type UserPostShort_PublicPost = BaseUserPostShortProps & {
 };
 
 type UserPostShort_UserPost = BaseUserPostShortProps & {
-  source: "userPost" | "searchPost";
+  source: "userPost" | "searchPost" | "anotherPost";
   data: { data: GetUserPostsParams_dataProps[] };
 };
 
@@ -48,7 +48,11 @@ export const UserPost_short = ({
       containerClassName = "h-66.5 md:h-74.5";
       break;
     case "searchPost":
-      dataSource = data;
+      dataSource = data.data;
+      containerClassName = "h-66.5 md:h-74.5";
+      break;
+    case "anotherPost":
+      dataSource = data.data;
       containerClassName = "h-66.5 md:h-74.5";
       break;
     default:
@@ -78,7 +82,7 @@ export const UserPost_short = ({
           />
         );
 
-        const postBlogTypePublic = ["publicPost", "searchPost"];
+        const postBlogTypePublic = ["publicPost", "searchPost", "anotherPost"];
 
         return (
           <Link

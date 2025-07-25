@@ -40,7 +40,12 @@ const initialState: initialStateProps = {
 const commentSlice = createSlice({
   name: "comment",
   initialState,
-  reducers: {},
+  reducers: {
+    resetAddCommentStatus: (state) => {
+      state.addComment_status = "idle";
+      state.addCommentError = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       // fechComment
@@ -63,7 +68,7 @@ const commentSlice = createSlice({
       })
       .addCase(addComment.fulfilled, (state, action:PayloadAction<any>) => {
         state.addComment_status = "succeeded";
-        state.data = [action.payload, ...state.data || []];
+        state.data = [ ...state.data, action.payload || []];
       })
       .addCase(addComment.rejected, (state, action) => {
         state.addComment_status = "failed";
@@ -72,5 +77,6 @@ const commentSlice = createSlice({
   },
 });
 
+export const { resetAddCommentStatus } = commentSlice.actions;
 export { fetchComment, addComment };
 export default commentSlice.reducer;

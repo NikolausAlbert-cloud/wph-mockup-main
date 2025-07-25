@@ -21,12 +21,11 @@ type NewCommentProps = {
 
 const postComment = async ({ payload }: NewCommentProps): Promise<CommentProps> => {
   try {
-    console.log("Posting comment:", payload);
-    const response = await customAxios.post(`/comments/${payload.postId}`, payload.comment);
-    console.log("Comment posted successfully:", response.data);
+    const response = await customAxios.post(
+      `/comments/${payload.postId}`, { content:payload.comment }
+    );
     return response.data;
   } catch (err) {
-    console.error(err);
     return Promise.reject(err);
   };
 };
@@ -36,7 +35,6 @@ const getComment = async (postId: number): Promise<CommentProps[]> => {
     const response = await customAxios.get(`/comments/${postId}`);
     return response.data;
   } catch (err) {
-    console.log(err);
     return Promise.reject(err);
   }
 }

@@ -1,4 +1,5 @@
 import { GetUserPostsParams_dataProps } from '@/api/posts'
+import { AnotherPost } from '@/components/Posts/AnotherPost';
 import { Comments } from '@/components/Posts/Comments';
 import { CommentsBlog } from '@/components/Posts/CommentsBlog';
 import { Post_empty } from '@/components/Posts/Post_empty';
@@ -97,6 +98,7 @@ export const PostDetail = () => {
       </div>
       <Comments postId={data.id} />
       <CommentsBlog postId={data.id} />
+      <AnotherPost />
     </div>
   )
 };

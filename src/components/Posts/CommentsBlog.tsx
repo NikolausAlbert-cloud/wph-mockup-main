@@ -4,13 +4,15 @@ import { AppDispatch, RootState } from '@/redux/store';
 import { formatDate } from '@/utils/formatDate';
 import { useDispatch, useSelector } from 'react-redux';
 import { PostImageHandler } from './PostImageHandler';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { fetchComment } from '@/redux/slices/commentSlice';
+import { resetAddCommentStatus } from '../../redux/slices/commentSlice';
 
 export const CommentsBlog = ({ postId }: {postId: number}) => {
   const dispatch: AppDispatch = useDispatch();
+  const [ showAllComments, setShowAllComments ] = useState(false);
 
-  const { fetchComment_status, data: dataComment, fetchError, addComment_status, addCommentError }: {
+  const { fetchComment_status, data: dataComment, fetchError:fetchCommentError, addComment_status, addCommentError }: {
     fetchComment_status: "idle" | "loading" | "succeeded" | "failed",
     data: CommentProps[],
     fetchError: string | null,
@@ -23,6 +25,10 @@ export const CommentsBlog = ({ postId }: {postId: number}) => {
   useEffect(() => {
     if (fetchComment_status === "idle" || addComment_status === "succeeded") {
       dispatch(fetchComment(postId));
+
+      if (addComment_status === "succeeded") {
+        dispatch(resetAddCommentStatus());  
+      }
     }
   }, [fetchComment_status, addComment_status, postId, dispatch]);
 
@@ -36,29 +42,41 @@ export const CommentsBlog = ({ postId }: {postId: number}) => {
     />
   );
 
+  const sortedComments = useMemo(() => {
+    if (!dataComment) return [];
+    return [...dataComment].sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+
+      return dateB - dateA;
+    })
+  }, [dataComment]);
+
+  const commentToRender = showAllComments ? sortedComments : sortedComments.slice(0, 3);
+
   return (
     <div>
       {fetchComment_status === "loading" ? (
         <p className="py-2">Loading comments...</p>
-      ) : fetchError || addCommentError ? (
+      ) : fetchCommentError || addCommentError ? (
         <p className="py-2 text-red-500">
-          Error loading comments: {fetchError || addCommentError || 'Unknown error'}
+          Error loading comments: {fetchCommentError || addCommentError || 'Unknown error'}
         </p>
-      ) : (!dataComment || !dataComment || dataComment.length === 0) ? (
+      ) : (!dataComment || dataComment.length === 0) ? (
         <p className="py-2">No comments found (or dataComment structure issue).</p>
       ) : (
         <div>
-          {dataComment.map((item: CommentProps) => (
-            <div 
-              key={item.id} 
+          { commentToRender.map((item: CommentProps) => (
+            <div
+              key={item.id}
               className="flex flex-col gap-2 py-3 border-t-1 border-t-neutral-300"
             >
               <div className="flex flex-row items-center gap-2.5 max-h-13 ">
-                { userImage }
-                <div className="flex flex-col justify-start tex-sm">
-                  <p className="font-semibold text-neutral-900">{item.author.name}</p>
-                  <p className="text-neutral-600">{formatDate(item.createdAt).date}</p>
-                </div>
+                {userImage}
+              <div className="flex flex-col justify-start text-sm">
+                <p className="font-semibold text-neutral-900">{item.author.name}</p>
+                <p className="text-neutral-600">{formatDate(item.createdAt).date}</p>
+              </div>
               </div>
               <div>
                 <p className="text-sm text-neutral-900">
@@ -67,6 +85,21 @@ export const CommentsBlog = ({ postId }: {postId: number}) => {
               </div>
             </div>
           ))}
+          {dataComment.length > 3 && !showAllComments ? (
+            <p
+              className="text-primary-300 text-sm font-semibold cursor-pointer pt-1 pb-4 not-even:underline underline-offset-4"
+              onClick={() => setShowAllComments(!showAllComments)}
+            >
+              Show All Comments
+            </p>
+          ) : (
+            <p
+              className="text-primary-300 text-sm font-semibold cursor-pointer pt-1 pb-4 underline underline-offset-4"
+              onClick={() => setShowAllComments(!showAllComments)}
+            >
+              Show Less Comments
+            </p>
+          )}
         </div>
       )}
     </div>
