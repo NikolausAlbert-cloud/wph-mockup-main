@@ -23,11 +23,20 @@ type UserPostShort_PublicPost = BaseUserPostShortProps & {
 };
 
 type UserPostShort_UserPost = BaseUserPostShortProps & {
-  source: "userPost" | "searchPost" | "anotherPost";
+  source: "userPost" | "searchPost" ;
   data: { data: GetUserPostsParams_dataProps[] };
 };
 
-type UserPost_shortProps = UserPostShort_PublicPost | UserPostShort_UserPost;
+type UserPostShort_AnotherPost = BaseUserPostShortProps & {
+  source: "anotherPost";
+  data: GetUserPostsParams_dataProps[];
+};
+
+type UserPost_shortProps = 
+  | UserPostShort_PublicPost 
+  | UserPostShort_UserPost 
+  | UserPostShort_AnotherPost;
+
 type ItemProps = GetPublicPostResponse_dataProps | GetUserPostsParams_dataProps;
 
 export const UserPost_short = ({ 
@@ -37,25 +46,28 @@ export const UserPost_short = ({
   let dataSource = [];
   const dispatch:AppDispatch = useDispatch();
 
+  console.log("UserPost_short data", data, status, error, source);
+
   let containerClassName = "";
   switch (source) {
     case "userPost":
-      dataSource = data.data;
+    case "searchPost":
+      dataSource = (data as UserPostShort_UserPost["data"]).data;
       containerClassName = "h-63 md:h-74.5";
+      if (source === "searchPost") {
+        containerClassName = "h-66.5 md:h-74.5";
+      }
       break;
     case "publicPost":
-      dataSource = data.pages[0].data;
-      containerClassName = "h-66.5 md:h-74.5";
-      break;
-    case "searchPost":
-      dataSource = data.data;
+      dataSource = (data as UserPostShort_PublicPost["data"]).pages[0].data;
       containerClassName = "h-66.5 md:h-74.5";
       break;
     case "anotherPost":
-      dataSource = data.data;
+      dataSource = (data as UserPostShort_AnotherPost["data"]);
       containerClassName = "h-66.5 md:h-74.5";
       break;
     default:
+      console.warn("Invalid source type provided to UserPost_short");
       return;
   }
 
@@ -64,13 +76,13 @@ export const UserPost_short = ({
   }
 
   if (status === "failed") {
-    return <p>Error: {error?.message || "Error in fetching user posts data"}</p>
+    return <p>Error: {error || "Error in fetching user posts data"}</p>
   }
 
   return (
     <>
       {dataSource.map((item: ItemProps, i) => {
-        const createDate = formatDate(item.createdAt);
+        const createDate = item.createdAt ? formatDate(item.createdAt) : { date: "", time: "" };
       // const updateDate = formatDate(item.updateAt);
 
         const mainPostImage = (
@@ -87,7 +99,7 @@ export const UserPost_short = ({
         return (
           <Link
             to={`/posts/detail/${item.id}`} 
-            onClick={() => dispatch(fetchPostDetail(item.id))}
+            onClick={() => { if (item.id) dispatch(fetchPostDetail(item.id)) }}
             key={item.id} 
             className={`${containerClassName} w-full flex py-4 md:py-5 border-neutral-300 ${postBlogTypePublic.includes(source) && i === 0 ? "" : "border-t-[1px]"}`}
           >

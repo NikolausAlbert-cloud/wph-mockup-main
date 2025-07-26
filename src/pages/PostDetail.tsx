@@ -98,7 +98,7 @@ export const PostDetail = () => {
       </div>
       <Comments postId={data.id} />
       <CommentsBlog postId={data.id} />
-      <AnotherPost />
+      <AnotherPost userId={data.author.id} postId={data.id} />
     </div>
   )
 };

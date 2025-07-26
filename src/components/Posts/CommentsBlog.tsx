@@ -4,9 +4,10 @@ import { AppDispatch, RootState } from '@/redux/store';
 import { formatDate } from '@/utils/formatDate';
 import { useDispatch, useSelector } from 'react-redux';
 import { PostImageHandler } from './PostImageHandler';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchComment } from '@/redux/slices/commentSlice';
 import { resetAddCommentStatus } from '../../redux/slices/commentSlice';
+import { useSortedDataToTimes } from '@/hooks/useSortedDataToTimes';
 
 export const CommentsBlog = ({ postId }: {postId: number}) => {
   const dispatch: AppDispatch = useDispatch();
@@ -42,15 +43,7 @@ export const CommentsBlog = ({ postId }: {postId: number}) => {
     />
   );
 
-  const sortedComments = useMemo(() => {
-    if (!dataComment) return [];
-    return [...dataComment].sort((a, b) => {
-      const dateA = new Date(a.createdAt).getTime();
-      const dateB = new Date(b.createdAt).getTime();
-
-      return dateB - dateA;
-    })
-  }, [dataComment]);
+  const sortedComments = useSortedDataToTimes(dataComment);
 
   const commentToRender = showAllComments ? sortedComments : sortedComments.slice(0, 3);
 

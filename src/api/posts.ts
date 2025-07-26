@@ -145,6 +145,30 @@ const getPostDetail = async (id: number): Promise<GetUserPostsResponse> => {
   return response.data;
 }
 
+type GetForeignUserPostsParams = {
+  payload: {
+    userId: number;
+    limit: number;
+    page: number;
+  };
+};
+
+type ForeignUserInfoProps = {
+  user: {
+    id: number;
+    name: string;
+    email: string;
+    headline: string;
+    avatarUrl: string;
+  };
+};
+
+const getForeignUserPosts = async ({ payload }: GetForeignUserPostsParams):Promise<GetUserPostsResponse & ForeignUserInfoProps> => {
+  const response = await customAxios.get(`/posts/by-user/${payload.userId}?limit=${payload.limit}&page=${payload.page}`);
+
+  return response.data;
+}
+
 export type {
   GetUserPostsParams_dataProps,
   GetUserPostsParams,
@@ -153,6 +177,8 @@ export type {
   GetPublicPostResponse,
   GetMostLikePostsResponse_dataProps,
   GetMostLikePostsResponse,
+  GetForeignUserPostsParams,
+  ForeignUserInfoProps
 }
 
 export {
@@ -162,4 +188,5 @@ export {
   getMostLikePosts,
   searchPosts,
   getPostDetail,
+  getForeignUserPosts
 }
