@@ -99,8 +99,8 @@ export const Comments = ({postId}: {postId: number}) => {
           placeholder="Enter your comment"
           className="w-full min-h-35 border-1 border-neutral-300 rounded-md py-2 px-4" 
         />
-        <div className="float-end">
-          <Button className="w-full md:w-51 h-12" disabled={isSending} type="submit" >
+        <div className="flex max-sm:justify-center justify-end">
+          <Button className="max-sm:w-full w-51 h-12" disabled={isSending} type="submit" >
             { isSending ? "Sending..." : "Send" }
           </Button>
         </div>

@@ -40,14 +40,15 @@ export const PostDetail = () => {
         component="postblog"
         imageUrl={data.imageUrl}
         altText="Post Image"
-        className="w-full h-full max-h-152 rounded-sm"
+        className="w-full max-w-200 h-full max-h-152 rounded-sm"
       />
     );
 
   return (
     <div 
       key={data.id}
-      className={`mx-auto w-full max-w-200 flex flex-col gap-4 mt-32`}
+      className={`mx-auto flex flex-col gap-3 md:gap-4 mt-20 md:mt-32`}
+      style={{ width: "clamp(22.44rem, 55.56vw, 50.0rem)" }}
     >
       <h1 
         className="text-md md:text-xl font-semibold  md:font-bold text-neutral-900"
