@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Control, useController } from 'react-hook-form';
-import { CloudUpload, XCircle } from 'lucide-react';
+import { ArrowUpToLine, CloudUpload, Trash2, XCircle } from 'lucide-react';
 
 type ImageUploaderProps = {
   name: string;
@@ -66,7 +66,15 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ name, control }) =
     onBlur();
   };
 
-    const handleClearImage = (e) => {
+  const handleChangeImage = (e) => {
+    e.stopPropagation(); // Prevent triggering the handleClick (which opens file dialog)
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+    onBlur(); // Mark field as touched
+  }
+
+  const handleClearImage = (e) => {
     e.stopPropagation(); // Prevent triggering the handleClick (which opens file dialog)
     onChange(null); // Set the react-hook-form field value to null
     
@@ -87,17 +95,44 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ name, control }) =
         onDrop={handleDrop}
       >
         {previewImage ? (
-          <div className="image-preview">
-            <img src={previewImage} alt="Preview" className="h-full w-full object-contain" />
-            <span className="file-name">{value?.name}</span>
-            <button
-              type="button" 
-              onClick={handleClearImage}
-              className="clear-image-button"
-              aria-label="Remove image"
-            >
-              <XCircle size={20} />
-            </button>
+          <div className="image-preview py-4 px-6 flex flex-col gap-3">
+            <div className="flex-center">
+              <img 
+                src={previewImage} 
+                alt="Preview" 
+                className="object-contain flex-center"
+                style={{
+                  height: `clamp(10.38rem, 19.44vw, 17.50rem)`,
+                  width: `clamp(19.56rem, 36.74vw, 33.06rem)`,
+                }}
+              />
+            </div>
+            {/* <span className="file-name">{value?.name}</span> */}
+            <div className="flex-center gap-3">
+              <button 
+                className="py-1.5 px-3 flex-center gap-1.5 border-neutral-300 border-[1px] rounded-lg cursor-pointer"
+                type="button" 
+                onClick={handleChangeImage}
+                aria-label="Change image"
+              >
+                <ArrowUpToLine size={15} />
+                <p className="text-sm font-semibold">Change Image</p>
+              </button>
+              <button 
+                className="py-1.5 px-3 flex-center gap-1.5 border-neutral-300 border-[1px] rounded-lg text-red-delete cursor-pointer"
+                type="button" 
+                onClick={handleClearImage}
+                aria-label="Remove image"
+              >
+                <Trash2 size={15} />
+                <p className="text-sm font-semibold">Delete Image</p>
+              </button>
+            </div>
+            <div className="flex-center">
+              <p className="text-neutral-700 text-xs font-regular">
+                PNG or JPG  (max. 5mb)
+              </p>
+            </div>
           </div>
         ) : (
           <div className="py-4 px-6 flex-center flex-col">

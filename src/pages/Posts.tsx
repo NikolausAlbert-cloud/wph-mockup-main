@@ -69,11 +69,9 @@ export const Posts = () => {
         payload: payloadData,
       });
 
-      console.log("Response from API:", response);
       setInfo("Post created successfully!");
       reset();
     } catch (err) {
-      console.error("Error submitting form:", err.response);
       if (axios.isAxiosError(err) && err.response) {
         const errorMessage = err.response.data?.message || 'An error occurred during post creation.';
         setError(`Error: ${errorMessage}`);
